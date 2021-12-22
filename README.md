@@ -1,2 +1,66 @@
-# arxiv_intelligence_ner_ws
-Web service specialized in Named Entity Recognition (NER), in Natural Language Processing (NLP)
+# arXiv Intelligence NER Web Service
+
+Web service specialized in Named Entity Recognition (NER), in Natural Language Processing (NLP).
+
+# Install
+
+## With Linux or Mac OS
+
+### Dependencies: pdftotext
+
+These instructions assume you're using Python 3 on a recent OS. Package names may differ for Python 2 or for an older OS.
+
+#### Debian, Ubuntu, and friends
+
+    $ sudo apt install build-essential libpoppler-cpp-dev pkg-config python3-dev
+
+#### Fedora, Red Hat, and friends
+
+    $ sudo yum install gcc-c++ pkgconfig poppler-cpp-devel python3-devel
+
+#### macOS
+    
+    $ brew install pkg-config poppler python
+
+### Web Service
+
+Create a virtualenv and activate it:
+
+    $ python -m venv venv
+    $ . venv/bin/activate
+
+Install arXiv Intelligence NER Web Service:
+
+    $ pip install -r requirements.txt
+
+## With Windows OS
+
+Sorry, this app is not currently compatible with Windows... Please use Docker instead.
+
+# Run
+
+## With Linux or Mac OS
+
+    $ export FLASK_APP=web_service
+    $ export FLASK_ENV=development
+    $ flask run
+
+# Test
+
+## pylint
+
+    $ apt install pylint
+    $ export PYTHONPATH="venv/lib/python3.9/site-packages/"
+    $ pylint web_service/*
+
+## pytest
+
+    $ pip install '.[test]'
+    $ pytest
+
+Run with coverage report:
+
+    $ export PYTHONPATH="venv/lib/python3.9/site-packages/"
+    $ coverage run -m pytest
+    $ coverage report
+    $ coverage html  # open htmlcov/index.html in a browser
