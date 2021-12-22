@@ -7,6 +7,8 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 from pathlib import Path
 from flask import Flask
 from web_service import router
+import configparser
+import sys
 
 def create_app(test_config=None):
     """Create and configure the flask app with the factory pattern"""
@@ -17,11 +19,18 @@ def create_app(test_config=None):
         app.config.from_pyfile("config.py", silent=True)
     else:
         # load the test config if passed in
-        app.config.from_pyfile("config.py", silent=False)
         app.config.update(test_config)
 
     # Register the router
     app.register_blueprint(router.bp)
+
+    # We load the setup config file
+    setupConfig = configparser.ConfigParser()
+    setupConfig.read('setup.cfg')
+    try:
+        print(setupConfig['metadata']['name'] + " v" + setupConfig['metadata']['version'])
+    except KeyError as err:
+        print(f"Error in file setup.cfg: {err=}, {type(err)=}", file=sys.stderr)
 
     # Check if the folder where uploaded files will be saved exists
     folder = Path(app.config["UPLOAD_FOLDER"])
