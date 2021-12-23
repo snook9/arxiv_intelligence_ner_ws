@@ -26,4 +26,4 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         export PYTHONPATH="venv/lib/python3.9/site-packages/"
-        pylint web_service/*
+        pylint --disable too-many-instance-attributes --disable too-many-arguments --disable c-extension-no-member web_service/*

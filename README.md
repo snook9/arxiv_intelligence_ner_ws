@@ -51,7 +51,7 @@ Sorry, this app is not currently compatible with Windows... Please use Docker in
 
     $ apt install pylint
     $ export PYTHONPATH="venv/lib/python3.9/site-packages/"
-    $ pylint --disable too-many-instance-attributes --disable too-many-arguments web_service/*
+    $ pylint --disable too-many-instance-attributes --disable too-many-arguments --disable c-extension-no-member web_service/*
 
 ## pytest
 

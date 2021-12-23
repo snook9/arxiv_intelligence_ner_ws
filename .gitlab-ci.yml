@@ -36,7 +36,7 @@ pylint:
   stage: Static Analysis
   allow_failure: true
   script:
-  - pylint web_service/*
+  - pylint --disable too-many-instance-attributes --disable too-many-arguments --disable c-extension-no-member web_service/*
 
 pytest:
   stage: Test
