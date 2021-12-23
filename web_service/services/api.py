@@ -6,7 +6,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import json
 from pathlib import Path
-from flask import Response, current_app as app
+from flask import Response
 from werkzeug.utils import secure_filename
 from web_service.entities import PdfEntity, MessageEntity, MessageEncoder
 from web_service.common import Config
@@ -68,7 +68,7 @@ class Api:
                 # Save the file in an upload folder
                 file.save(filepath)
                 # Extract and persist the file in the database
-                doc_id = PdfEntity().extract_and_persist(filepath)
+                doc_id = PdfEntity().start_ner(filepath)
                 # If failed
                 if None is doc_id:
                     # Returns the appropriate error
