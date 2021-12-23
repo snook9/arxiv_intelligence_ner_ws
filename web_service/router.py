@@ -4,7 +4,8 @@ Authors: Jonathan CASSAING
 Web service specialized in Named Entity Recognition (NER), in Natural Language Processing (NLP)
 """
 
-from flask import Blueprint, Response
+from flask import Blueprint, request
+from web_service.services import Api
 
 bp = Blueprint("router", __name__, template_folder="templates")
 
@@ -15,4 +16,4 @@ def index():
     Returns:
         flask.Response: standard flask HTTP response.
     """
-    return Response("Hello World!")
+    return Api.index(request)

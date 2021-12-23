@@ -6,11 +6,9 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import configparser
 import sys
-from pathlib import Path
 from flask import Flask
 from web_service import router
-
-config = configparser.ConfigParser()
+from web_service.common import Config
 
 def create_app(test_config=None):
     """Create and configure the flask app with the factory pattern"""
@@ -34,16 +32,8 @@ def create_app(test_config=None):
     except KeyError as err:
         print(f"Error in file setup.cfg: {err=}, {type(err)=}", file=sys.stderr)
 
-    # We load the global config file
-    config.read('config/config.ini')
-
-    # Check if the folder where uploaded files will be saved exists
-    try:
-        folder = Path(config.get("DEFAULT","upload_temp_folder"))
-    except KeyError as err:
-        print(f"Error in file config/config.ini: {err=}, {type(err)=}", file=sys.stderr)
-        sys.exit()
-
+    # We create the temp folder for uploaded files
+    folder = Config().upload_temp_folder
     if False is folder.exists():
         # If the folder doesn't exist, we create it
         folder.mkdir()
