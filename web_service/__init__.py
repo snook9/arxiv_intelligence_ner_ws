@@ -10,6 +10,8 @@ from web_service import router
 import configparser
 import sys
 
+config = configparser.ConfigParser()
+
 def create_app(test_config=None):
     """Create and configure the flask app with the factory pattern"""
     app = Flask(__name__, instance_relative_config=True)
@@ -28,12 +30,20 @@ def create_app(test_config=None):
     setupConfig = configparser.ConfigParser()
     setupConfig.read('setup.cfg')
     try:
-        print(setupConfig['metadata']['name'] + " v" + setupConfig['metadata']['version'])
+        print(setupConfig.get('metadata', 'name') + " v" + setupConfig.get('metadata', 'version'))
     except KeyError as err:
         print(f"Error in file setup.cfg: {err=}, {type(err)=}", file=sys.stderr)
 
+    # We load the global config file
+    config.read('config/config.ini')
+
     # Check if the folder where uploaded files will be saved exists
-    folder = Path(app.config["UPLOAD_FOLDER"])
+    try:
+        folder = Path(config.get("DEFAULT","upload_temp_folder"))
+    except KeyError as err:
+        print(f"Error in file config/config.ini: {err=}, {type(err)=}", file=sys.stderr)
+        sys.exit()
+
     if False is folder.exists():
         # If the folder doesn't exist, we create it
         folder.mkdir()
