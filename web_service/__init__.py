@@ -28,12 +28,15 @@ def create_app(test_config=None):
     setup_config = configparser.ConfigParser()
     setup_config.read('setup.cfg')
     try:
-        print(setup_config.get('metadata', 'name_long') + " v" + setup_config.get('metadata', 'version'))
+        print(
+            setup_config.get('metadata', 'name_long') +
+            " v" + setup_config.get('metadata', 'version')
+        )
     except KeyError as err:
         print(f"Error in file setup.cfg: {err=}, {type(err)=}", file=sys.stderr)
 
     # We create the temp folder for uploaded files
-    folder = Config().upload_temp_folder
+    folder = Config().get_upload_temp_folder()
     if False is folder.exists():
         # If the folder doesn't exist, we create it
         folder.mkdir()

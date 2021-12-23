@@ -17,10 +17,6 @@ class PdfEntity(DocumentEntity):
     """Class for representing Pdf entity and his Data Access Object
     """
 
-    def __init__(self: object):
-        """Initialize the object"""
-        pass
-
     def _async_insert(self, filename: Path, object_id: int):
         """Private method to extract then update a PDF object in the database
         You must use insert() without parameter before,

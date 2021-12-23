@@ -27,7 +27,7 @@ class Api:
         """
         return (
             "." in filename
-            and filename.rsplit(".", 1)[1].lower() in Config().allowed_extensions
+            and filename.rsplit(".", 1)[1].lower() in Config().get_allowed_extensions()
         )
 
     @staticmethod
@@ -64,7 +64,7 @@ class Api:
             if file and Api.allowed_file(file.filename):
                 # Check user input
                 filename = secure_filename(file.filename)
-                filepath = Path().joinpath(Config().upload_temp_folder, filename)
+                filepath = Path().joinpath(Config().get_upload_temp_folder(), filename)
                 # Save the file in an upload folder
                 file.save(filepath)
                 # Extract and persist the file in the database

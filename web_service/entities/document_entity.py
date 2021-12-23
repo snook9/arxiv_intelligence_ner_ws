@@ -5,8 +5,8 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 """
 
 import json
-from web_service.common import Base, session_factory
 from sqlalchemy import Column, Integer, String
+from web_service.common import Base, session_factory
 
 class DocumentEntity(Base):
     """Class for representing a generic document entity and his Data Access Object
@@ -42,7 +42,6 @@ class DocumentEntity(Base):
 
     def __init__(self: object):
         """Initialize the object"""
-        pass
 
     def insert(
             self,

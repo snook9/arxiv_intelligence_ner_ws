@@ -12,6 +12,7 @@ class Config:
     """Class for accessing config.ini file"""
 
     def __init__(self: object, ):
+        """Initialize the object"""
         config = configparser.ConfigParser()
         # We load the global config file
         config.read('config/config.ini')
@@ -27,3 +28,11 @@ class Config:
         except configparser.NoOptionError as err:
             print(f"Error in file config/config.ini: {err=}, {type(err)=}", file=sys.stderr)
             self.allowed_extensions = "pdf"
+
+    def get_upload_temp_folder(self):
+        """Returns upload_temp_folder"""
+        return self.upload_temp_folder
+
+    def get_allowed_extensions(self):
+        """Returns allowed_extensions"""
+        return self.allowed_extensions

@@ -18,6 +18,13 @@ class MessageEntity:
         self.object_id = object_id
         self.message = message
 
+    def get_message(self):
+        """Returns message"""
+        return self.message
+
+    def get_id(self):
+        """Returns ID"""
+        return self.object_id
 
 class MessageEncoder(json.JSONEncoder):
     """Class for converting full object to JSON string"""
