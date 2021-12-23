@@ -4,11 +4,11 @@ Authors: Jonathan CASSAING
 Web service specialized in Named Entity Recognition (NER), in Natural Language Processing (NLP)
 """
 
+import configparser
+import sys
 from pathlib import Path
 from flask import Flask
 from web_service import router
-import configparser
-import sys
 
 config = configparser.ConfigParser()
 
@@ -27,10 +27,10 @@ def create_app(test_config=None):
     app.register_blueprint(router.bp)
 
     # We load the setup config file
-    setupConfig = configparser.ConfigParser()
-    setupConfig.read('setup.cfg')
+    setup_config = configparser.ConfigParser()
+    setup_config.read('setup.cfg')
     try:
-        print(setupConfig.get('metadata', 'name') + " v" + setupConfig.get('metadata', 'version'))
+        print(setup_config.get('metadata', 'name_long') + " v" + setup_config.get('metadata', 'version'))
     except KeyError as err:
         print(f"Error in file setup.cfg: {err=}, {type(err)=}", file=sys.stderr)
 

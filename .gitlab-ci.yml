@@ -1,0 +1,46 @@
+image: "python:3.9"
+
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/reference/pip_install/#caching
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+cache:
+  paths:
+    - .cache/pip
+    - venv/
+
+before_script:
+  - apt-get update -q -y
+  - apt-get install -y build-essential libpoppler-cpp-dev pkg-config python3-dev
+  - python --version
+  - pip install virtualenv
+  - virtualenv venv
+  - source venv/bin/activate
+  - python -m pip install --upgrade pip
+  - pip install -r requirements.txt
+  - pip install pytest
+  - pip install pylint
+  - pip install '.[test]'
+
+stages:
+  - Static Analysis
+  - Test
+
+pylint:
+  stage: Static Analysis
+  allow_failure: true
+  script:
+  - pylint web_service/*
+
+pytest:
+  stage: Test
+  script:
+  - export FLASK_APP=web_service
+  - export FLASK_ENV=development
+  - pytest
