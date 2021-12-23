@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from flask import Response, current_app as app
 from werkzeug.utils import secure_filename
-from web_service.entities import ArticleModel, MessageModel, MessageEncoder
+from web_service.entities import PdfEntity, MessageEntity, MessageEncoder
 from web_service.common import Config
 
 class Api:
@@ -45,7 +45,7 @@ class Api:
             # check if the post request has the file part
             if "file" not in request.files:
                 return Response(
-                    json.dumps(MessageModel("No file part"), cls=MessageEncoder),
+                    json.dumps(MessageEntity("No file part"), cls=MessageEncoder),
                     mimetype="application/json;charset=utf-8",
                 ), 400
 
@@ -56,7 +56,7 @@ class Api:
             # submit an empty part without filename
             if file.filename == "":
                 return Response(
-                    json.dumps(MessageModel("No selected file"), cls=MessageEncoder),
+                    json.dumps(MessageEntity("No selected file"), cls=MessageEncoder),
                     mimetype="application/json;charset=utf-8",
                 ), 400
 
@@ -68,13 +68,13 @@ class Api:
                 # Save the file in an upload folder
                 file.save(filepath)
                 # Extract and persist the file in the database
-                doc_id = ArticleModel().extract_and_persist(filepath)
+                doc_id = PdfEntity().extract_and_persist(filepath)
                 # If failed
                 if None is doc_id:
                     # Returns the appropriate error
                     return Response(
                         json.dumps(
-                            MessageModel("This file's type is not allowed!"),
+                            MessageEntity("This file's type is not allowed!"),
                             cls=MessageEncoder,
                         ),
                         mimetype="application/json;charset=utf-8",
@@ -82,7 +82,7 @@ class Api:
                 # Else, returning the ID of the object in the database
                 return Response(
                     json.dumps(
-                        MessageModel(
+                        MessageEntity(
                             "The file '" + filename + "' has been sent successfully!",
                             doc_id,
                         ),
@@ -94,16 +94,10 @@ class Api:
             # Else, the file's type is not allowed
             return Response(
                 json.dumps(
-                    MessageModel("This file's type is not allowed!"), cls=MessageEncoder
+                    MessageEntity("This file's type is not allowed!"), cls=MessageEncoder
                 ),
                 mimetype="application/json;charset=utf-8",
             ), 400
-
-        # Check if the application returns a message
-        # NO MORE USED CURRENTLY
-        message = request.args.get("message")
-        if None is message:
-            message = ""
 
         # Generate an index HTML page with an outstanding look & feel
         return Response("Hello World!")

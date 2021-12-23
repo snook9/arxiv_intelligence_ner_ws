@@ -1,2 +1,2 @@
-from .article_model import ArticleModel, ArticleEncoder
-from .message_model import MessageModel, MessageEncoder
+from .pdf_entity import PdfEntity, PdfEncoder
+from .message_entity import MessageEntity, MessageEncoder

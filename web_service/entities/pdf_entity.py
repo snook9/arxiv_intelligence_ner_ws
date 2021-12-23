@@ -16,11 +16,8 @@ from flask import current_app as app
 from sqlalchemy import Column, Integer, String
 from web_service.common import Base, session_factory
 
-class ArticleModel(Base):
-    """Class for representing Article entity and his Data Access Object
-
-    This class can be used to persist the object in the database AND
-    to save the Article in a basic text file.
+class PdfEntity(Base):
+    """Class for representing Pdf entity and his Data Access Object
     """
 
     # Table name in the database
@@ -131,17 +128,17 @@ class ArticleModel(Base):
             self.content = str(content)
             session.add(self)
         else:
-            article_model = session.query(ArticleModel).get(object_id)
-            article_model.status = "SUCCESS"
-            article_model.date = str(date)
-            article_model.author = str(author)
-            article_model.creator = str(creator)
-            article_model.producer = str(producer)
-            article_model.subject = str(subject)
-            article_model.title = str(title)
-            article_model.number_of_pages = number_of_pages
-            article_model.raw_info = str(raw_info)
-            article_model.content = str(content)
+            pdf_entity = session.query(PdfEntity).get(object_id)
+            pdf_entity.status = "SUCCESS"
+            pdf_entity.date = str(date)
+            pdf_entity.author = str(author)
+            pdf_entity.creator = str(creator)
+            pdf_entity.producer = str(producer)
+            pdf_entity.subject = str(subject)
+            pdf_entity.title = str(title)
+            pdf_entity.number_of_pages = number_of_pages
+            pdf_entity.raw_info = str(raw_info)
+            pdf_entity.content = str(content)
 
         session.commit()
         # We save the ID cause it will wiped after the session.close()
@@ -219,11 +216,11 @@ class ArticleModel(Base):
 
         return None
 
-class ArticleEncoder(json.JSONEncoder):
+class PdfEncoder(json.JSONEncoder):
     """Class for converting full object to JSON string"""
 
     def default(self, o):
-        if isinstance(o, ArticleModel):
+        if isinstance(o, PdfEntity):
             doc_id = o.id
             if None is doc_id:
                 # If None, the object was created after a INSERT query,
