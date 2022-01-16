@@ -7,6 +7,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 import configparser
 import sys
 from flask import Flask
+from pathlib import Path
 from web_service import router
 from web_service.common import Config
 
@@ -34,6 +35,12 @@ def create_app(test_config=None):
         )
     except KeyError as err:
         print(f"Error in file setup.cfg: {err=}, {type(err)=}", file=sys.stderr)
+
+    # We create the instance folder for the database
+    path_folder = Path("instance")
+    if False is path_folder.exists():
+        # If the folder doesn't exist, we create it
+        path_folder.mkdir()
 
     # We create the temp folder for uploaded files
     folder = Config().get_upload_temp_folder()
