@@ -7,6 +7,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import json
 import io
+import time
 from sqlalchemy.sql.expression import null
 from web_service.entities.pdf_entity import PdfEntity
 from web_service import create_app
@@ -28,16 +29,18 @@ def test_index(client):
     response = client.post("/", data=data, content_type="multipart/form-data")
     assert response.status_code == 400
 
-    # Test uploading a pdf file
-    data["file"] = io.BytesIO(b"my file content"), "test_file.pdf"
+    # Test uploading a real pdf file
+    data["file"] = (open("tests/article.pdf", 'rb'), "tests/article.pdf")
     response = client.post("/", data=data, content_type="multipart/form-data")
     assert response.status_code == 201
 
 def test_get_document(client):
-    """Test the /documents/<id> route"""
+    """Test the /document/<id> route"""
     # To insert a first document in the database (in case the db is empty)
     with create_app({"TESTING": True}).app_context():
         PdfEntity().start_ner("tests/article.pdf")
+        # We wait 3 sec to let the process finish
+        time.sleep(3)
 
     # Now, the first document exists
     # So, we get it
