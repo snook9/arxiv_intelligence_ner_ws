@@ -6,7 +6,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import json
 from pathlib import Path
-from flask import Response
+from flask import Response, render_template
 from werkzeug.utils import secure_filename
 from web_service.entities import PdfEntity, MessageEntity, MessageEncoder
 from web_service.common import Config
@@ -100,4 +100,4 @@ class Api:
             ), 400
 
         # Generate an index HTML page with an outstanding look & feel
-        return Response("Hello World!")
+        return render_template("index.html", title="NER Web Service")
