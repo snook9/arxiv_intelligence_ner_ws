@@ -15,4 +15,4 @@ class test_Api(unittest.TestCase):
             # Must be OK for PDF file type
             self.assertTrue(Api.Api().allowed_file("file.pdf"))
             # Must be False for other file types
-            self.assertFalse(Api.Api().allowed_file("file.txt"))
+            self.assertFalse(Api.Api().allowed_file("file.doc"))
