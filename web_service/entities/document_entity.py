@@ -22,8 +22,8 @@ class DocumentEntity(Base):
     id = Column("id", Integer, primary_key=True)
     # Status column in the database
     status = Column("status", String(255))
-    # Date and time column in the database
-    date = Column("date", String(255))
+    # Uploaded date and time column in the database
+    uploaded_date = Column("uploaded_date", String(255))
     # Author PDF meta data
     author = Column("author", String(255))
     # Creator PDF meta data
@@ -48,7 +48,7 @@ class DocumentEntity(Base):
 
     def insert(
             self,
-            date: str = None,
+            uploaded_date: str = None,
             author: str = None,
             creator: str = None,
             producer: str = None,
@@ -62,7 +62,7 @@ class DocumentEntity(Base):
 
         session = session_factory()
         self.status = "PENDING"
-        self.date = str(date)
+        self.uploaded_date = str(uploaded_date)
         self.author = str(author)
         self.creator = str(creator)
         self.producer = str(producer)
@@ -83,7 +83,7 @@ class DocumentEntity(Base):
     def update(
             self,
             object_id: int,
-            date: str = None,
+            uploaded_date: str = None,
             author: str = None,
             creator: str = None,
             producer: str = None,
@@ -98,7 +98,7 @@ class DocumentEntity(Base):
         session = session_factory()
         pdf_entity = session.query(DocumentEntity).get(object_id)
         pdf_entity.status = "SUCCESS"
-        pdf_entity.date = str(date)
+        pdf_entity.uploaded_date = str(uploaded_date)
         pdf_entity.author = str(author)
         pdf_entity.creator = str(creator)
         pdf_entity.producer = str(producer)
@@ -153,7 +153,7 @@ class DocumentEncoder(json.JSONEncoder):
             return {
                 "id": doc_id,
                 "status": o.status,
-                "date": o.date,
+                "uploaded_date": o.uploaded_date,
                 "author": o.author,
                 "creator": o.creator,
                 "producer": o.producer,

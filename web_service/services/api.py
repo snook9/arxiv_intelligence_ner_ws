@@ -8,8 +8,11 @@ import json
 from pathlib import Path
 from flask import Response, render_template
 from werkzeug.utils import secure_filename
-from web_service.entities import PdfEntity, MessageEntity, MessageEncoder
-from web_service.common import Config
+from web_service.entities import DocumentEntity, PdfEntity, MessageEntity, MessageEncoder
+from web_service.common import Config, session_factory
+from sqlalchemy import select
+
+from web_service.entities.document_entity import DocumentEncoder
 
 class Api:
     """Api controller of the arXiv Intelligence NER Web Service"""
@@ -101,3 +104,35 @@ class Api:
 
         # Generate an index HTML page with an outstanding look & feel
         return render_template("index.html", title="NER Web Service")
+
+    @staticmethod
+    def get_document(request, doc_id: int):
+        """Information about a document.
+        GET method returns metadata, named entities and RDF triples about the document, specified by the ID parameter.
+            See README.md for response format.
+        Returns:
+            flask.Response: standard flask HTTP response.
+        """
+        if request.method == "GET":
+            # Preparing the query for the ID
+            stmt = select(DocumentEntity).where(DocumentEntity.id == doc_id)
+            # Retreive the session
+            session = session_factory()
+            # Executing the query
+            result = session.execute(stmt)
+            # Parsing the result
+            for user_obj in result.scalars():
+                # Converting the object to JSON string
+                json_data = json.dumps(user_obj, cls=DocumentEncoder)
+                # We leave the for and return the first element
+                # (cause "normaly", there is only one row)
+                return Response(json_data, mimetype="application/json;charset=utf-8")
+            # Else, no document found
+            return Response(
+                json.dumps(MessageEntity("No document found"), cls=MessageEncoder),
+                mimetype="application/json;charset=utf-8",
+            ), 404
+        return Response(
+            json.dumps(MessageEntity("Incorrect HTTP method"), cls=MessageEncoder),
+            mimetype="application/json;charset=utf-8",
+        ), 405

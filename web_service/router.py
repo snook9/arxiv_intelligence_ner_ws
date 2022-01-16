@@ -17,3 +17,13 @@ def index():
         flask.Response: standard flask HTTP response.
     """
     return Api.index(request)
+
+@bp.route("/document/<int:doc_id>", methods=["GET"])
+def get_document(doc_id):
+    """Information about a document.
+    GET method returns metadata, named entities and RDF triples about the document, specified by the ID parameter.
+        See README.md for response format.
+    Returns:
+        flask.Response: standard flask HTTP response.
+    """
+    return Api.get_document(request, doc_id)
