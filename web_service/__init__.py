@@ -6,8 +6,8 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import configparser
 import sys
-from flask import Flask
 from pathlib import Path
+from flask import Flask
 from web_service import router
 from web_service.common import Config
 

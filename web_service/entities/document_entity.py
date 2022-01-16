@@ -5,12 +5,14 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 """
 
 import json
+import sys
 from datetime import datetime
 from multiprocessing import Process
 from pathlib import Path
 from sqlalchemy import Column, Integer, String
 from web_service.common import Base, session_factory
-from web_service.entities.named_entity import NamedEntity, NamedEntityScoreEnum, NamedEntityTypeEnum, NamedEntityEncoder
+from web_service.entities.named_entity import NamedEntity, NamedEntityScoreEnum
+from web_service.entities.named_entity import NamedEntityTypeEnum, NamedEntityEncoder
 
 class DocumentEntity(Base):
     """Class for representing a generic document entity and his Data Access Object
@@ -48,45 +50,6 @@ class DocumentEntity(Base):
 
     def __init__(self: object):
         """Initialize the object"""
-
-    def _async_ner(self, filename: Path, object_id: int):
-        """Private method to extract named entities then update a PDF object in the database
-        You must use insert() without parameter before,
-        to get the id of your futur line in the database.
-
-        Args:
-            filename (str): filename of the target file
-            object_id (int): id of the database line to update
-
-        Returns:
-            int: ID of the persisted object in the database.
-        """
-        today = datetime.today().strftime("%Y-%m-%d-%H-%M-%S.%f")
-
-        with open(filename, "r") as file:
-            # Extracting the text (content)
-            content = file.read()
-
-            # We extract the named entities
-            named_entities = self.extract_named_entities(content)
-            # We convert named entities to json
-            json_named_entities = json.dumps(named_entities, cls=NamedEntityEncoder)
-
-            # Saving content to the database
-            self.update(
-                object_id,
-                today,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                None,
-                content,
-                json_named_entities
-            )
-            return self.internal_id
 
     def insert(
             self,
@@ -157,7 +120,51 @@ class DocumentEntity(Base):
 
         return self.internal_id
 
-    def extract_named_entities(self, text: str):
+    def _async_ner(self, filename: Path, object_id: int):
+        """Private method to extract named entities then update a PDF object in the database
+        You must use insert() without parameter before,
+        to get the id of your futur line in the database.
+
+        Args:
+            filename (str): filename of the target file
+            object_id (int): id of the database line to update
+
+        Returns:
+            int: ID of the persisted object in the database.
+        """
+        try:
+            # Extracting data end metadata of the document
+            document = self.extract_document(filename)
+        except IOError:
+            print(
+                "Error: the file", filename.absolute, "does not appear to exist",
+                file=sys.stderr
+                )
+
+        # We extract the named entities
+        named_entities = self.extract_named_entities(document.content)
+        # We convert named entities to json
+        json_named_entities = json.dumps(named_entities, cls=NamedEntityEncoder)
+
+        # Saving content to the database
+        self.update(
+            object_id,
+            datetime.today().strftime("%Y-%m-%d-%H-%M-%S.%f"),
+            document.author,
+            document.creator,
+            document.producer,
+            document.subject,
+            document.title,
+            document.number_of_pages,
+            document.raw_info,
+            document.content,
+            json_named_entities
+        )
+        return self.internal_id
+
+    @staticmethod
+    def extract_named_entities(text: str):
+        """This method extracted the named entities from the text"""
         named_entities = list()
 
         named_entity_1 = NamedEntity()
@@ -179,7 +186,24 @@ class DocumentEntity(Base):
         named_entities.append(named_entity_2)
 
         return named_entities
-    
+
+    @staticmethod
+    def extract_document(filename: Path):
+        """Method for extracting data and metadata from a document
+
+        You must overwrite extract_document() by your own code
+        if you would extract data and metadata from a specific document.
+        See PdfEntity for example.
+        Returns:
+            document (DocumentEntity): You must fill the following attributes of the document;
+            author, creator, producer, subject, title, number_of_pages, info, content."""
+        with open(filename, "r") as file:
+            # Extracting the text (content)
+            content = file.read()
+            document = DocumentEntity()
+            document.content = content
+            return document
+
     def start_ner(self, filename: Path):
         """Start the recognition of named entities
         Public method to extract then persist a document in the database
@@ -190,7 +214,9 @@ class DocumentEntity(Base):
         which will be inserted when the process will finish.
 
         This method calls _async_ner() method and execute it in a separated process.
-        You must overwrite _async_ner() by your own code if you would execute a specific treatment.
+        You must overwrite extract_document() by your own code
+        if you would extract data and metadata from a specific document.
+        See PdfEntity for example.
 
         Args:
             filename (str): filename of the target file
