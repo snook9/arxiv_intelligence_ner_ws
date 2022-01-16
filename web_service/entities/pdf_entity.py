@@ -50,11 +50,8 @@ class PdfEntity(DocumentEntity):
 
             # We extract the named entities
             named_entities = self.extract_named_entities(content)
-
             # We convert named entities to json
-            json_named_entities = list()
-            for named_entity in named_entities:
-                json_named_entities.append(json.dumps(named_entity, cls=NamedEntityEncoder))
+            json_named_entities = json.dumps(named_entities, cls=NamedEntityEncoder)
 
             # Saving content AND meta data to the database
             self.update(
@@ -67,7 +64,8 @@ class PdfEntity(DocumentEntity):
                 title,
                 number_of_pages,
                 info,
-                content
+                content,
+                json_named_entities
             )
             return self.internal_id
 

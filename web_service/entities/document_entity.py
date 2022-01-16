@@ -40,6 +40,8 @@ class DocumentEntity(Base):
     raw_info = Column("raw_info", String())
     # Content column in the database
     content = Column("content", String)
+    # Named entities extracted in json format
+    named_entities = Column("named_entities", String())
 
     def __init__(self: object):
         """Initialize the object"""
@@ -54,7 +56,8 @@ class DocumentEntity(Base):
             title: str = None,
             number_of_pages: int = None,
             raw_info: str = None,
-            content: str = None,):
+            content: str = None,
+            named_entities: str = None):
         """Insert a new object to the database"""
 
         session = session_factory()
@@ -68,6 +71,7 @@ class DocumentEntity(Base):
         self.number_of_pages = number_of_pages
         self.raw_info = str(raw_info)
         self.content = str(content)
+        self.named_entities = str(named_entities)
         session.add(self)
         session.commit()
         # We save the ID cause it will wiped after the session.close()
@@ -87,7 +91,8 @@ class DocumentEntity(Base):
             title: str = None,
             number_of_pages: int = None,
             raw_info: str = None,
-            content: str = None):
+            content: str = None,
+            named_entities: str = None):
         """Update an object in the database"""
 
         session = session_factory()
@@ -102,6 +107,7 @@ class DocumentEntity(Base):
         pdf_entity.number_of_pages = number_of_pages
         pdf_entity.raw_info = str(raw_info)
         pdf_entity.content = str(content)
+        pdf_entity.named_entities = str(named_entities)
         session.commit()
         # We save the ID cause it will wiped after the session.close()
         self.internal_id = self.id
@@ -156,6 +162,7 @@ class DocumentEncoder(json.JSONEncoder):
                 "number_of_pages": o.number_of_pages,
                 "raw_info": o.raw_info,
                 "content": o.content,
+                "named_entities": o.named_entities
             }
         # Base class will raise the TypeError.
         return super().default(o)
