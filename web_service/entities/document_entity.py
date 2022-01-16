@@ -5,9 +5,12 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 """
 
 import json
+from datetime import datetime
+from multiprocessing import Process
+from pathlib import Path
 from sqlalchemy import Column, Integer, String
 from web_service.common import Base, session_factory
-from web_service.entities.named_entity import NamedEntity, NamedEntityScoreEnum, NamedEntityTypeEnum
+from web_service.entities.named_entity import NamedEntity, NamedEntityScoreEnum, NamedEntityTypeEnum, NamedEntityEncoder
 
 class DocumentEntity(Base):
     """Class for representing a generic document entity and his Data Access Object
@@ -45,6 +48,45 @@ class DocumentEntity(Base):
 
     def __init__(self: object):
         """Initialize the object"""
+
+    def _async_ner(self, filename: Path, object_id: int):
+        """Private method to extract named entities then update a PDF object in the database
+        You must use insert() without parameter before,
+        to get the id of your futur line in the database.
+
+        Args:
+            filename (str): filename of the target file
+            object_id (int): id of the database line to update
+
+        Returns:
+            int: ID of the persisted object in the database.
+        """
+        today = datetime.today().strftime("%Y-%m-%d-%H-%M-%S.%f")
+
+        with open(filename, "r") as file:
+            # Extracting the text (content)
+            content = file.read()
+
+            # We extract the named entities
+            named_entities = self.extract_named_entities(content)
+            # We convert named entities to json
+            json_named_entities = json.dumps(named_entities, cls=NamedEntityEncoder)
+
+            # Saving content to the database
+            self.update(
+                object_id,
+                today,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                content,
+                json_named_entities
+            )
+            return self.internal_id
 
     def insert(
             self,
@@ -137,6 +179,33 @@ class DocumentEntity(Base):
         named_entities.append(named_entity_2)
 
         return named_entities
+    
+    def start_ner(self, filename: Path):
+        """Start the recognition of named entities
+        Public method to extract then persist a document in the database
+        First, this method ask an ID for the futur line in the database, then,
+        this method create a process for extracting data and
+        persisting the object in the database.
+        This method returns the ID of the object in the database
+        which will be inserted when the process will finish.
+
+        This method calls _async_ner() method and execute it in a separated process.
+        You must overwrite _async_ner() by your own code if you would execute a specific treatment.
+
+        Args:
+            filename (str): filename of the target file
+
+        Returns:
+            int: ID of the persisted object in the database,
+            otherwise - returns None if the file's type is not supported.
+        """
+        # We persist an empty object just to get the ID of the line in the database
+        object_id = self.insert()
+        # We launch the process
+        process = Process(target=self._async_ner, args=(filename, object_id))
+        process.start()
+        # Returning the id in the database
+        return object_id
 
 class DocumentEncoder(json.JSONEncoder):
     """Class for converting full object to JSON string"""

@@ -6,10 +6,9 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import json
 from datetime import datetime
-from pathlib import Path
-from multiprocessing import Process
 # pdftotext is used to extract PDF content (text body)
 import pdftotext
+from pathlib import Path
 # PyPDF2 is used to extract PDF meta data
 from PyPDF2 import PdfFileReader
 from web_service.entities.document_entity import DocumentEntity
@@ -19,8 +18,8 @@ class PdfEntity(DocumentEntity):
     """Class for representing Pdf entity and his Data Access Object
     """
 
-    def _async_insert(self, filename: Path, object_id: int):
-        """Private method to extract then update a PDF object in the database
+    def _async_ner(self, filename: Path, object_id: int):
+        """Private method to extract named entities then update a PDF object in the database
         You must use insert() without parameter before,
         to get the id of your futur line in the database.
 
@@ -68,30 +67,3 @@ class PdfEntity(DocumentEntity):
                 json_named_entities
             )
             return self.internal_id
-
-    def start_ner(self, filename: Path):
-        """Start the recognition of named entities
-        Public method to extract then persist a PDF object in the database
-        First, this method ask an ID for the futur line in the database, then,
-        this method create a process for extracting data and
-        persisting the object in the database.
-        This method returns the ID of the object in the database
-        which will be inserted when the process will finish.
-
-        Args:
-            filename (str): filename of the target file
-
-        Returns:
-            int: ID of the persisted object in the database,
-            otherwise - returns None if the file's type is not supported.
-        """
-        if str(filename).rsplit(".", 1)[1].lower() == "pdf":
-            # We persist an empty object just to get the ID of the line in the database
-            object_id = self.insert()
-
-            process = Process(target=self._async_insert, args=(filename, object_id))
-            process.start()
-
-            return object_id
-
-        return None
