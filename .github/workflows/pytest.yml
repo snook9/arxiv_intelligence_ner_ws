@@ -30,6 +30,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install '.[test]'
-      - name: Analysing the code with pylint
+      - name: Testing the code with pytest
         run: |
           PYTHONPATH=. pytest
