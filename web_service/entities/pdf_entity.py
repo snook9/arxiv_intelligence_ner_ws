@@ -6,9 +6,9 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import json
 from datetime import datetime
+from pathlib import Path
 # pdftotext is used to extract PDF content (text body)
 import pdftotext
-from pathlib import Path
 # PyPDF2 is used to extract PDF meta data
 from PyPDF2 import PdfFileReader
 from web_service.entities.document_entity import DocumentEntity
