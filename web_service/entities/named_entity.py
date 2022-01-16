@@ -51,14 +51,22 @@ class NamedEntityEncoder(json.JSONEncoder):
 
     def default(self, o):
         if isinstance(o, NamedEntity):
-            return {
+
+            json = {
                 "text": o.text, 
                 "score": o.score.name,
-                "aws_score": o.aws_score,
                 "type": o.type.name,
                 "begin_offset": o.begin_offset,
                 "end_offset": o.end_offset,
                 }
+
+            try:
+                json["aws_score"] = o.aws_score
+            except AttributeError:
+                # It's normal to not have this field for non AWS named entities
+                pass
+
+            return json
 
         # Base class will raise the TypeError.
         return super().default(o)

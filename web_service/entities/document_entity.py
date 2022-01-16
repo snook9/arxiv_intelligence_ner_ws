@@ -7,7 +7,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 import json
 from sqlalchemy import Column, Integer, String
 from web_service.common import Base, session_factory
-from web_service.entities.named_entity import NamedEntity, NamedEntityScoreEnum, NamedEntityTypeEnum
+from web_service.entities.named_entity import NamedEntity, NamedEntityEncoder, NamedEntityScoreEnum, NamedEntityTypeEnum
 
 class DocumentEntity(Base):
     """Class for representing a generic document entity and his Data Access Object
@@ -121,7 +121,6 @@ class DocumentEntity(Base):
         named_entity_1 = NamedEntity()
         named_entity_1.text = "Jean Luc"
         named_entity_1.score = NamedEntityScoreEnum.MEDIUM
-        named_entity_1.aws_score = -1
         named_entity_1.type = NamedEntityTypeEnum.PERSON
         named_entity_1.begin_offset = 120
         named_entity_1.end_offset = named_entity_1.begin_offset + len(named_entity_1.text)
@@ -150,6 +149,10 @@ class DocumentEncoder(json.JSONEncoder):
                 # so, the internal_id is the table id
                 doc_id = o.internal_id
 
+            json_named_entities = None
+            if o.named_entities is not None:
+                json_named_entities = json.loads(o.named_entities)
+
             return {
                 "id": doc_id,
                 "status": o.status,
@@ -162,7 +165,7 @@ class DocumentEncoder(json.JSONEncoder):
                 "number_of_pages": o.number_of_pages,
                 "raw_info": o.raw_info,
                 "content": o.content,
-                "named_entities": o.named_entities
+                "named_entities": json_named_entities
             }
         # Base class will raise the TypeError.
         return super().default(o)
