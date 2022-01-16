@@ -8,6 +8,7 @@ import json
 from enum import Enum
 
 class NamedEntityScoreEnum(Enum):
+    """Enum for the score of a named entity"""
     # The score is based on the number of models that detect the entity.
     # The used models are AWS Comprehend, NLTK and Spacy
     # The score is high if all models detected the entity
@@ -18,6 +19,7 @@ class NamedEntityScoreEnum(Enum):
     LOW = "Low"
 
 class NamedEntityTypeEnum(Enum):
+    """Enum for the type of a named entity"""
     # A branded product
     COMMERCIAL_ITEM = "Commercial item"
     # A full date (for example, 11/25/2017), day (Tuesday), month (May), or time (8:30 a.m.)
@@ -38,6 +40,7 @@ class NamedEntityTypeEnum(Enum):
     OTHER = "Other"
 
 class NamedEntity:
+    """Named entity class"""
     text: str
     score: NamedEntityScoreEnum
     # Score in percentage given by AWS Comprehend only
@@ -52,8 +55,8 @@ class NamedEntityEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, NamedEntity):
 
-            json = {
-                "text": o.text, 
+            json_data = {
+                "text": o.text,
                 "score": o.score.name,
                 "type": o.type.name,
                 "begin_offset": o.begin_offset,
@@ -61,12 +64,12 @@ class NamedEntityEncoder(json.JSONEncoder):
                 }
 
             try:
-                json["aws_score"] = o.aws_score
+                json_data["aws_score"] = o.aws_score
             except AttributeError:
                 # It's normal to not have this field for non AWS named entities
                 pass
 
-            return json
+            return json_data
 
         # Base class will raise the TypeError.
         return super().default(o)

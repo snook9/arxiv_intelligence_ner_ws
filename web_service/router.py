@@ -21,7 +21,8 @@ def index():
 @bp.route("/document/<int:doc_id>", methods=["GET"])
 def get_document(doc_id):
     """Information about a document.
-    GET method returns metadata, named entities and RDF triples about the document, specified by the ID parameter.
+    GET method returns metadata, named entities and RDF triples about the document,
+    specified by the ID parameter.
         See README.md for response format.
     Returns:
         flask.Response: standard flask HTTP response.

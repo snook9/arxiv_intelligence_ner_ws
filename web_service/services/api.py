@@ -8,10 +8,9 @@ import json
 from pathlib import Path
 from flask import Response, render_template
 from werkzeug.utils import secure_filename
+from sqlalchemy import select
 from web_service.entities import DocumentEntity, PdfEntity, MessageEntity, MessageEncoder
 from web_service.common import Config, session_factory
-from sqlalchemy import select
-
 from web_service.entities.document_entity import DocumentEncoder
 
 class Api:
@@ -108,7 +107,8 @@ class Api:
     @staticmethod
     def get_document(request, doc_id: int):
         """Information about a document.
-        GET method returns metadata, named entities and RDF triples about the document, specified by the ID parameter.
+        GET method returns metadata, named entities and RDF triples about the document,
+        specified by the ID parameter.
             See README.md for response format.
         Returns:
             flask.Response: standard flask HTTP response.

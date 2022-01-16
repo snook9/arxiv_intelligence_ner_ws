@@ -7,7 +7,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 import json
 from sqlalchemy import Column, Integer, String
 from web_service.common import Base, session_factory
-from web_service.entities.named_entity import NamedEntity, NamedEntityEncoder, NamedEntityScoreEnum, NamedEntityTypeEnum
+from web_service.entities.named_entity import NamedEntity, NamedEntityScoreEnum, NamedEntityTypeEnum
 
 class DocumentEntity(Base):
     """Class for representing a generic document entity and his Data Access Object
@@ -114,7 +114,7 @@ class DocumentEntity(Base):
         session.close()
 
         return self.internal_id
-    
+
     def extract_named_entities(self, text: str):
         named_entities = list()
 
