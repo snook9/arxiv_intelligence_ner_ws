@@ -165,7 +165,7 @@ class DocumentEntity(Base):
     @staticmethod
     def extract_named_entities(text: str):
         """This method extracted the named entities from the text"""
-        named_entities = list()
+        named_entities = []
 
         named_entity_1 = NamedEntity()
         named_entity_1.text = "Jean Luc"
@@ -197,7 +197,7 @@ class DocumentEntity(Base):
         Returns:
             document (DocumentEntity): You must fill the following attributes of the document;
             author, creator, producer, subject, title, number_of_pages, info, content."""
-        with open(filename, "r") as file:
+        with open(filename, "r", encoding='utf-8') as file:
             # Extracting the text (content)
             content = file.read()
             document = DocumentEntity()
