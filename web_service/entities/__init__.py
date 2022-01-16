@@ -5,5 +5,6 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 """
 
 from .document_entity import DocumentEntity, DocumentEncoder
+from .named_entity import NamedEntity, NamedEntityEncoder
 from .pdf_entity import PdfEntity
 from .message_entity import MessageEntity, MessageEncoder

@@ -4,6 +4,7 @@ Authors: Jonathan CASSAING
 Web service specialized in Named Entity Recognition (NER), in Natural Language Processing (NLP)
 """
 
+import json
 from datetime import datetime
 from pathlib import Path
 from multiprocessing import Process
@@ -12,6 +13,7 @@ import pdftotext
 # PyPDF2 is used to extract PDF meta data
 from PyPDF2 import PdfFileReader
 from web_service.entities.document_entity import DocumentEntity
+from web_service.entities.named_entity import NamedEntityEncoder
 
 class PdfEntity(DocumentEntity):
     """Class for representing Pdf entity and his Data Access Object
@@ -34,6 +36,7 @@ class PdfEntity(DocumentEntity):
         with open(filename, "rb") as file:
             # Extracting the text (content)
             data = pdftotext.PDF(file)
+            content = "".join(data)
 
             # Extracting meta data
             pdf = PdfFileReader(file)
@@ -44,6 +47,14 @@ class PdfEntity(DocumentEntity):
             producer = info.producer
             subject = info.subject
             title = info.title
+
+            # We extract the named entities
+            named_entities = self.extract_named_entities(content)
+
+            # We convert named entities to json
+            json_named_entities = list()
+            for named_entity in named_entities:
+                json_named_entities.append(json.dumps(named_entity, cls=NamedEntityEncoder))
 
             # Saving content AND meta data to the database
             self.update(
@@ -56,7 +67,7 @@ class PdfEntity(DocumentEntity):
                 title,
                 number_of_pages,
                 info,
-                "".join(data)
+                content
             )
             return self.internal_id
 

@@ -7,6 +7,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 import json
 from sqlalchemy import Column, Integer, String
 from web_service.common import Base, session_factory
+from web_service.entities.named_entity import NamedEntity, NamedEntityScoreEnum, NamedEntityTypeEnum
 
 class DocumentEntity(Base):
     """Class for representing a generic document entity and his Data Access Object
@@ -107,6 +108,30 @@ class DocumentEntity(Base):
         session.close()
 
         return self.internal_id
+    
+    def extract_named_entities(self, text: str):
+        named_entities = list()
+
+        named_entity_1 = NamedEntity()
+        named_entity_1.text = "Jean Luc"
+        named_entity_1.score = NamedEntityScoreEnum.MEDIUM
+        named_entity_1.aws_score = -1
+        named_entity_1.type = NamedEntityTypeEnum.PERSON
+        named_entity_1.begin_offset = 120
+        named_entity_1.end_offset = named_entity_1.begin_offset + len(named_entity_1.text)
+
+        named_entity_2 = NamedEntity()
+        named_entity_2.text = "AIRBUS"
+        named_entity_2.score = NamedEntityScoreEnum.HIGH
+        named_entity_2.aws_score = 0.98
+        named_entity_2.type = NamedEntityTypeEnum.ORGANIZATION
+        named_entity_2.begin_offset = 526
+        named_entity_2.end_offset = named_entity_1.begin_offset + len(named_entity_1.text)
+
+        named_entities.append(named_entity_1)
+        named_entities.append(named_entity_2)
+
+        return named_entities
 
 class DocumentEncoder(json.JSONEncoder):
     """Class for converting full object to JSON string"""
