@@ -29,6 +29,8 @@ def create_app(test_config=None):
 
     # Register the router
     app.register_blueprint(router.bp)
+    # TODO TEMP code
+    app.register_blueprint(router.bp2)
 
     # We load the setup config file
     setup_config = configparser.ConfigParser()
