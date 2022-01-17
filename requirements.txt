@@ -1,13 +1,10 @@
-aniso8601==9.0.1
 attrs==21.2.0
 click==8.0.3
 Flask==2.0.2
-flask-restx==0.5.1
 greenlet==1.1.2
 iniconfig==1.1.1
 itsdangerous==2.0.1
 Jinja2==3.0.3
-jsonschema==4.4.0
 MarkupSafe==2.0.1
 packaging==21.3
 pdftotext==2.2.2
@@ -15,10 +12,7 @@ pluggy==1.0.0
 py==1.11.0
 pyparsing==3.0.6
 PyPDF2==1.26.0
-pyrsistent==0.18.1
 pytest==6.2.5
-pytz==2021.3
-six==1.16.0
 SQLAlchemy==1.4.29
 toml==0.10.2
 Werkzeug==2.0.2

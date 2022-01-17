@@ -8,29 +8,30 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 import json
 import io
 import time
+from sqlalchemy.sql.expression import null
 from web_service.entities.pdf_entity import PdfEntity
 from web_service import create_app
 
 def test_index(client):
     """Test the index route"""
-    response = client.get("/document/upload")
+    response = client.get("/")
     assert response.status_code == 200
 
     data = dict()
 
     # Test uploading a file without file part
     data["file"] = b"my file content", "test_file.txt"
-    response = client.post("/document/upload", data=data, content_type="multipart/form-data")
+    response = client.post("/", data=data, content_type="multipart/form-data")
     assert response.status_code == 400
 
     # Test uploading a file with a forbidden extension
     data["file"] = io.BytesIO(b"my file content"), "test_file.doc"
-    response = client.post("/document/upload", data=data, content_type="multipart/form-data")
+    response = client.post("/", data=data, content_type="multipart/form-data")
     assert response.status_code == 400
 
     # Test uploading a real pdf file
     data["file"] = (open("tests/article.pdf", 'rb'), "tests/article.pdf")
-    response = client.post("/document/upload", data=data, content_type="multipart/form-data")
+    response = client.post("/", data=data, content_type="multipart/form-data")
     assert response.status_code == 201
 
 def test_get_document(client):
