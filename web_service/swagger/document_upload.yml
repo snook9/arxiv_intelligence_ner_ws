@@ -1,0 +1,14 @@
+openapi: 3.0.3
+tags:
+  - name: Upload a PDF document
+get:
+  description: Display the index page
+post:
+  description: To upload a PDF document
+responses:
+    '200':
+          description: Successful response
+    '400':
+          description: Bad Request
+    '500':
+          description: Internal Server Error
