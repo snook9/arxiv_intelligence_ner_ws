@@ -3,6 +3,13 @@ tags:
   - name: Metadata and Named Entities of a document 
 get:
   description: None
+parameters:
+  - name: doc_id
+    in: doc_id
+    description: Identifier of the document
+    type: integer
+    required: true
+    default: 1
 responses:
     '200':
           description: Successful response
