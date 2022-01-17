@@ -66,8 +66,8 @@ swagger_config = {
     "headers": [],
     "specs": [
         {
-        "endpoint": 'hello_world',
-        "route": '/hello_world.json',
+        "endpoint": '/',
+        "route": '/index.json',
         "rule_filter": lambda rule: True,
         "model_filter": lambda tag: True,
     }],

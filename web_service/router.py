@@ -10,7 +10,7 @@ from web_service.services import Api
 
 bp = Blueprint("router", __name__, template_folder="templates")
 
-@swag_from("swagger/hello_world.yml", methods=["GET"])
+@swag_from("swagger/index.yml", methods=["GET"])
 @bp.route("/", methods=["GET", "POST"])
 def index():
     """Index of the API.
