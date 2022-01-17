@@ -5,10 +5,12 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 """
 
 from flask import Blueprint, request
+from flasgger import swag_from
 from web_service.services import Api
 
 bp = Blueprint("router", __name__, template_folder="templates")
 
+@swag_from("hello_world.yml", methods=["GET"])
 @bp.route("/", methods=["GET", "POST"])
 def index():
     """Index of the API.
