@@ -56,9 +56,9 @@ def create_app(test_config=None):
 
 swagger_template = dict(
     info = {
-        'title': LazyString(lambda: 'My first Swagger UI document'),
-        'version': LazyString(lambda: '0.1'),
-        'description': LazyString(lambda: 'This document depicts a sample Swagger UI document and implements Hello World functionality after executing GET.'),
+        "title": LazyString(lambda: "Swagger UI document of the arXiv Intelligence NER Web Service"),
+        "version": LazyString(lambda: "0.1"),
+        "description": LazyString(lambda: "This document describes the web service interface specification."),
     },
     host = LazyString(lambda: request.host)
 )
@@ -66,8 +66,8 @@ swagger_config = {
     "headers": [],
     "specs": [
         {
-        "endpoint": '/',
-        "route": '/index.json',
+        "endpoint": "/",
+        "route": "/swagger.json",
         "rule_filter": lambda rule: True,
         "model_filter": lambda tag: True,
     }],

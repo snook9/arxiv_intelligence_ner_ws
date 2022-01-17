@@ -1,10 +1,8 @@
 openapi: 3.0.3
 tags:
-  - name: Hello World
+  - name: Metadata and Named Entities of a document 
 get:
-  description: Afficher la page d'accueil
-post:
-  description: Uploader un document PDF
+  description: None
 responses:
     '200':
           description: Successful response

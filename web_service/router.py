@@ -10,8 +10,9 @@ from web_service.services import Api
 
 bp = Blueprint("router", __name__, template_folder="templates")
 
-@swag_from("swagger/index.yml", methods=["GET"])
+@swag_from("swagger/index.yml", methods=["GET", "POST"])
 @bp.route("/", methods=["GET", "POST"])
+@bp.route("/document/upload", methods=["GET", "POST"])
 def index():
     """Index of the API.
 
@@ -20,6 +21,7 @@ def index():
     """
     return Api.index(request)
 
+@swag_from("swagger/document.yml", methods=["GET", "POST"])
 @bp.route("/document/<int:doc_id>", methods=["GET"])
 def get_document(doc_id):
     """Information about a document.
