@@ -5,7 +5,7 @@ get:
   description: None
 parameters:
   - name: doc_id
-    in: doc_id
+    in: path
     description: Identifier of the document
     type: integer
     required: true
