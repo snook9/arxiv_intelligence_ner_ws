@@ -70,7 +70,7 @@ class Api:
                 # Save the file in an upload folder
                 file.save(filepath)
                 # Extract and persist the file in the database
-                doc_id = PdfEntity().start_ner(filepath)
+                doc_id = PdfEntity(current_app.project_config).start_ner(filepath)
                 # If failed
                 if None is doc_id:
                     # Returns the appropriate error

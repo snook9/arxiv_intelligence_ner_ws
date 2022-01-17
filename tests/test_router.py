@@ -36,11 +36,12 @@ def test_index(client):
 
 def test_get_document(client):
     """Test the /document/metadata/<id> route"""
-    # To insert a first document in the database (in case the db is empty)
-    with create_app({"TESTING": True}).app_context():
-        PdfEntity().start_ner("tests/article.pdf")
-        # We wait 3 sec to let the process finish
-        time.sleep(3)
+    # We insert a first document in the database (in case the db is empty)
+    data = dict()
+    data["file"] = (open("tests/article.pdf", 'rb'), "tests/article.pdf")
+    response = client.post("/", data=data, content_type="multipart/form-data")
+    # We wait 3 sec to let the process finish
+    time.sleep(3)
 
     # Now, the first document exists
     # So, we get it

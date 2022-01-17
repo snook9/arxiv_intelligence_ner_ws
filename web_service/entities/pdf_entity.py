@@ -9,16 +9,20 @@ from pathlib import Path
 import pdftotext
 # PyPDF2 is used to extract PDF meta data
 from PyPDF2 import PdfFileReader
+from web_service.common import Config
 from web_service.entities.document_entity import DocumentEntity
 
 class PdfEntity(DocumentEntity):
     """Class for representing Pdf entity and his Data Access Object
     """
+    def __init__(self: object, config: Config):
+        self.config = config
+        super().__init__(config)
 
     def extract_document(self, filename: Path):
         """Overwriting DocumnetEntity.extract_document() by a specific pdf code"""
         with open(filename, "rb") as file:
-            document = DocumentEntity()
+            document = DocumentEntity(self.config)
             # Extracting the text (content)
             data = pdftotext.PDF(file)
             document.content = "".join(data)

@@ -10,7 +10,7 @@ from datetime import datetime
 from multiprocessing import Process
 from pathlib import Path
 from sqlalchemy import Column, Integer, String
-from web_service.common import Base, session_factory
+from web_service.common import Base, session_factory, Config
 from web_service.entities.named_entity import NamedEntity, NamedEntityScoreEnum
 from web_service.entities.named_entity import NamedEntityTypeEnum, NamedEntityEncoder
 
@@ -48,8 +48,9 @@ class DocumentEntity(Base):
     # Named entities extracted in json format
     named_entities = Column("named_entities", String())
 
-    def __init__(self: object):
+    def __init__(self: object, config: Config):
         """Initialize the object"""
+        self.config = config
 
     def insert(
             self,
@@ -162,9 +163,16 @@ class DocumentEntity(Base):
         )
         return self.internal_id
 
-    @staticmethod
-    def extract_named_entities(text: str):
+    def extract_named_entities(self, text: str):
         """This method extracted the named entities from the text"""
+        ner_methods = self.config.get_ner_methods()
+        if "aws-comprehend" in ner_methods:
+            print("AWS Comprehend NER method enabled")
+        if "nltk" in ner_methods:
+            print("NLTK NER method enabled")
+        if "spacy" in ner_methods:
+            print("Spacy NER method enabled")
+
         named_entities = []
 
         named_entity_1 = NamedEntity()
