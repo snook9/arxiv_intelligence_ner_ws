@@ -5,26 +5,28 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 """
 
 from flask import Blueprint, request
-from web_service.services import Api
+from flask_restx import Resource
+from web_service.services import ApiService
 
 bp = Blueprint("router", __name__, template_folder="templates")
 
-@bp.route("/", methods=["GET", "POST"])
-def index():
-    """Index of the API.
+class Router(Resource):
+    @bp.route("/document/upload", methods=["GET", "POST"])
+    def index():
+        """Index of the API.
 
-    Returns:
-        flask.Response: standard flask HTTP response.
-    """
-    return Api.index(request)
+        Returns:
+            flask.Response: standard flask HTTP response.
+        """
+        return ApiService.index(request)
 
-@bp.route("/document/<int:doc_id>", methods=["GET"])
-def get_document(doc_id):
-    """Information about a document.
-    GET method returns metadata, named entities and RDF triples about the document,
-    specified by the ID parameter.
-        See README.md for response format.
-    Returns:
-        flask.Response: standard flask HTTP response.
-    """
-    return Api.get_document(request, doc_id)
+    @bp.route("/document/<int:doc_id>", methods=["GET"])
+    def get_document(doc_id):
+        """Information about a document.
+        GET method returns metadata, named entities and RDF triples about the document,
+        specified by the ID parameter.
+            See README.md for response format.
+        Returns:
+            flask.Response: standard flask HTTP response.
+        """
+        return ApiService.get_document(request, doc_id)

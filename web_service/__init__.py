@@ -8,12 +8,17 @@ import configparser
 import sys
 from pathlib import Path
 from flask import Flask
+from flask_restx import Api
 from web_service import router
 from web_service.common import Config
 
 def create_app(test_config=None):
     """Create and configure the flask app with the factory pattern"""
     app = Flask(__name__, instance_relative_config=True)
+    
+    # For OpenAPI
+    api = Api()
+    api.init_app(app)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
