@@ -6,11 +6,11 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import json
 from pathlib import Path
-from flask import Response, render_template
+from flask import Response, render_template, current_app
 from werkzeug.utils import secure_filename
 from sqlalchemy import select
 from web_service.entities import DocumentEntity, PdfEntity, MessageEntity, MessageEncoder
-from web_service.common import Config, session_factory
+from web_service.common import session_factory
 from web_service.entities.document_entity import DocumentEncoder
 
 class Api:
@@ -29,7 +29,7 @@ class Api:
         """
         return (
             "." in filename
-            and filename.rsplit(".", 1)[1].lower() in Config().get_allowed_extensions()
+            and filename.rsplit(".", 1)[1].lower() in current_app.project_config.get_allowed_extensions()
         )
 
     @staticmethod
@@ -66,7 +66,7 @@ class Api:
             if file and Api.allowed_file(file.filename):
                 # Check user input
                 filename = secure_filename(file.filename)
-                filepath = Path().joinpath(Config().get_upload_temp_folder(), filename)
+                filepath = Path().joinpath(current_app.project_config.get_upload_temp_folder(), filename)
                 # Save the file in an upload folder
                 file.save(filepath)
                 # Extract and persist the file in the database

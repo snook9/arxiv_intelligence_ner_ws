@@ -29,6 +29,12 @@ class Config:
             print(f"Error in file config/config.ini: {err=}, {type(err)=}", file=sys.stderr)
             self.allowed_extensions = "pdf"
 
+        try:
+            self.ner_methods = config.get("DEFAULT","ner_methods").split()
+        except configparser.NoOptionError as err:
+            print(f"Error in file config/config.ini: {err=}, {type(err)=}", file=sys.stderr)
+            self.ner_methods = "nltk spacy"
+
     def get_upload_temp_folder(self):
         """Returns upload_temp_folder"""
         return self.upload_temp_folder
@@ -36,3 +42,7 @@ class Config:
     def get_allowed_extensions(self):
         """Returns allowed_extensions"""
         return self.allowed_extensions
+    
+    def get_ner_methods(self):
+        """Returns allowed_extensions"""
+        return self.ner_methods

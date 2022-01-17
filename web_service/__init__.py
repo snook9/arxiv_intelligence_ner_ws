@@ -17,6 +17,9 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.json_encoder = LazyJSONEncoder
 
+    # We load the config.ini file, one time
+    app.project_config = Config()
+
     if test_config is None:
         # load the instance config, if it exists, when not testing
         app.config.from_pyfile("config.py", silent=True)
@@ -45,7 +48,7 @@ def create_app(test_config=None):
         path_folder.mkdir()
 
     # We create the temp folder for uploaded files
-    folder = Config().get_upload_temp_folder()
+    folder = app.project_config.get_upload_temp_folder()
     if False is folder.exists():
         # If the folder doesn't exist, we create it
         folder.mkdir()
