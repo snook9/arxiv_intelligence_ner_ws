@@ -13,7 +13,7 @@ from web_service.entities import DocumentEntity, PdfEntity, MessageEntity, Messa
 from web_service.common import Config, session_factory
 from web_service.entities.document_entity import DocumentEncoder
 
-class ApiService:
+class Api:
     """Api controller of the arXiv Intelligence NER Web Service"""
 
     def __init__(self: object):
@@ -63,7 +63,7 @@ class ApiService:
                 ), 400
 
             # If the file's type is allowed
-            if file and ApiService.allowed_file(file.filename):
+            if file and Api.allowed_file(file.filename):
                 # Check user input
                 filename = secure_filename(file.filename)
                 filepath = Path().joinpath(Config().get_upload_temp_folder(), filename)
