@@ -1,10 +1,10 @@
 openapi: 3.0.3
 tags:
-  - name: Hello World
+  - name: Upload a PDF document
 get:
-  description: Afficher la page d'accueil
+  description: Display the index page
 post:
-  description: Uploader un document PDF
+  description: To upload a PDF document
 responses:
     '200':
           description: Successful response
