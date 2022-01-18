@@ -4,15 +4,11 @@ Authors: Jonathan CASSAING
 Web service specialized in Named Entity Recognition (NER), in Natural Language Processing (NLP)
 """
 
-
 import json
 import io
 import time
-from sqlalchemy.sql.expression import null
-from web_service.entities.pdf_entity import PdfEntity
-from web_service import create_app
 
-def test_index(client):
+def test_post_document(client):
     """Test the index route"""
     response = client.get("/")
     assert response.status_code == 200
@@ -34,7 +30,7 @@ def test_index(client):
     response = client.post("/", data=data, content_type="multipart/form-data")
     assert response.status_code == 201
 
-def test_get_document(client):
+def test_get_document_metadata(client):
     """Test the /document/metadata/<id> route"""
     # We insert a first document in the database (in case the db is empty)
     data = dict()

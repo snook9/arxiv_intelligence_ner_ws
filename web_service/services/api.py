@@ -11,7 +11,6 @@ from werkzeug.utils import secure_filename
 from sqlalchemy import select
 from web_service.entities import DocumentEntity, PdfEntity, MessageEntity, MessageEncoder
 from web_service.common import session_factory
-from web_service.entities.document_entity import DocumentEncoder
 
 class Api:
     """Api controller of the arXiv Intelligence NER Web Service"""
@@ -33,7 +32,7 @@ class Api:
         )
 
     @staticmethod
-    def index(request):
+    def post_document(request):
         """Index of the API.
         GET method returns a wellcome message.
         POST method can be used to upload a PDF file.
@@ -105,7 +104,7 @@ class Api:
         return render_template("index.html", title="NER Web Service")
 
     @staticmethod
-    def get_document(request, doc_id: int):
+    def get_document_metadata(request, doc_id: int):
         """Information about a document.
         GET method returns metadata, named entities and RDF triples about the document,
         specified by the ID parameter.
@@ -122,8 +121,20 @@ class Api:
             result = session.execute(stmt)
             # Parsing the result
             for user_obj in result.scalars():
+                data = {}
+                data["id"] = user_obj.id
+                data["status"] = user_obj.status
+                data["uploaded_date"] = user_obj.uploaded_date
+                data["author"] = user_obj.author
+                data["creator"] = user_obj.creator
+                data["producer"] = user_obj.producer
+                data["subject"] = user_obj.subject
+                data["title"] = user_obj.title
+                data["number_of_pages"] = user_obj.number_of_pages
+                data["raw_info"] = user_obj.raw_info
+                data["named_entities"] = json.loads(user_obj.named_entities)
                 # Converting the object to JSON string
-                json_data = json.dumps(user_obj, cls=DocumentEncoder)
+                json_data = json.dumps(data)
                 # We leave the for and return the first element
                 # (cause "normaly", there is only one row)
                 return Response(json_data, mimetype="application/json;charset=utf-8")
