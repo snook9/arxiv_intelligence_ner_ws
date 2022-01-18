@@ -21,7 +21,7 @@ class NamedEntityScoreEnum(Enum):
 class NamedEntityTypeEnum(Enum):
     """Enum for the type of a named entity"""
     # A branded product
-    COMMERCIAL_ITEM = "Commercial item"
+    PRODUCT = "Product"
     # A full date (for example, 11/25/2017), day (Tuesday), month (May), or time (8:30 a.m.)
     DATE = "Date"
     # An event, such as a festival, concert, election, etc.

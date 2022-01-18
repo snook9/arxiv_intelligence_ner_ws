@@ -27,6 +27,7 @@ These instructions assume you're using Python 3 on a recent OS. Package names ma
 Create a virtualenv and activate it:
 
     python3 -m venv venv
+    python3 -m spacy download en_core_web_sm
     . venv/bin/activate
 
 Install arXiv Intelligence NER Web Service:

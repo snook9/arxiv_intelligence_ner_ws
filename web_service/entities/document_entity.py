@@ -167,17 +167,20 @@ class DocumentEntity(Base):
 
     def extract_named_entities(self, text: str):
         """This method extracted the named entities from the text"""
+
+        ner_services = []
         ner_methods = self.config.get_ner_methods()
         if "aws-comprehend" in ner_methods:
             print("AWS Comprehend NER method enabled")
         if "nltk" in ner_methods:
             print("NLTK NER method enabled")
         if "spacy" in ner_methods:
-            spacy_ner_service = SpacyNerService()
+            ner_services.append(SpacyNerService())
 
         named_entities = []
 
-        named_entities.append(spacy_ner_service.extract(text))
+        for ner_service in ner_services:
+            named_entities.extend(ner_service.extract(text))
 
         named_entity_1 = NamedEntity()
         named_entity_1.text = "Jean Luc"
