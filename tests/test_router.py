@@ -54,3 +54,28 @@ def test_get_document_metadata(client):
 
     response = client.post("/document/metadata/1")
     assert response.status_code == 405
+
+def test_get_document_content(client):
+    """Test the /document/content/<id> route"""
+    # We insert a first document in the database (in case the db is empty)
+    data = dict()
+    data["file"] = (open("tests/article.pdf", 'rb'), "tests/article.pdf")
+    response = client.post("/", data=data, content_type="multipart/form-data")
+    # We wait 3 sec to let the process finish
+    time.sleep(3)
+
+    # Now, the first document exists
+    # So, we get it
+    response = client.get("/document/content/1")
+    data = json.loads(response.get_data(as_text=True))
+
+    # The status must be 200 OK
+    assert response.status_code == 200
+    # We test if we received the ID of the JSON object
+    assert data["id"] == 1
+
+    response = client.get("/document/content/1000000000")
+    assert response.status_code == 404
+
+    response = client.post("/document/content/1")
+    assert response.status_code == 405

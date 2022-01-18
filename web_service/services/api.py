@@ -147,3 +147,39 @@ class Api:
             json.dumps(MessageEntity("Incorrect HTTP method"), cls=MessageEncoder),
             mimetype="application/json;charset=utf-8",
         ), 405
+
+    @staticmethod
+    def get_document_content(request, doc_id: int):
+        """Content inside a document.
+        GET method returns content about the document,
+        specified by the ID parameter.
+            See README.md for response format.
+        Returns:
+            flask.Response: standard flask HTTP response.
+        """
+        if request.method == "GET":
+            # Preparing the query for the ID
+            stmt = select(DocumentEntity).where(DocumentEntity.id == doc_id)
+            # Retreive the session
+            session = session_factory()
+            # Executing the query
+            result = session.execute(stmt)
+            # Parsing the result
+            for user_obj in result.scalars():
+                data = {}
+                data["id"] = user_obj.id
+                data["content"] = user_obj.content
+                # Converting the object to JSON string
+                json_data = json.dumps(data)
+                # We leave the for and return the first element
+                # (cause "normaly", there is only one row)
+                return Response(json_data, mimetype="application/json;charset=utf-8")
+            # Else, no document found
+            return Response(
+                json.dumps(MessageEntity("No document found"), cls=MessageEncoder),
+                mimetype="application/json;charset=utf-8",
+            ), 404
+        return Response(
+            json.dumps(MessageEntity("Incorrect HTTP method"), cls=MessageEncoder),
+            mimetype="application/json;charset=utf-8",
+        ), 405
