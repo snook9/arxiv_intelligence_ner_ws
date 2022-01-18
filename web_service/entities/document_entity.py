@@ -10,9 +10,11 @@ from datetime import datetime
 from multiprocessing import Process
 from pathlib import Path
 from sqlalchemy import Column, Integer, String
-from web_service.common import Base, session_factory, Config
-from web_service.entities.named_entity import NamedEntity, NamedEntityScoreEnum
-from web_service.entities.named_entity import NamedEntityTypeEnum, NamedEntityEncoder
+from web_service.common.base import Base, session_factory
+from web_service.common.config import Config
+from .named_entity import NamedEntity, NamedEntityEncoder
+from .named_entity import NamedEntityScoreEnum, NamedEntityTypeEnum
+from web_service.services.spacy_ner_service import SpacyNerService
 
 class DocumentEntity(Base):
     """Class for representing a generic document entity and his Data Access Object
@@ -171,9 +173,11 @@ class DocumentEntity(Base):
         if "nltk" in ner_methods:
             print("NLTK NER method enabled")
         if "spacy" in ner_methods:
-            print("Spacy NER method enabled")
+            spacy_ner_service = SpacyNerService()
 
         named_entities = []
+
+        named_entities.append(spacy_ner_service.extract(text))
 
         named_entity_1 = NamedEntity()
         named_entity_1.text = "Jean Luc"

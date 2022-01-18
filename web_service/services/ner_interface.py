@@ -4,6 +4,9 @@ Authors: Jonathan CASSAING
 Web service specialized in Named Entity Recognition (NER), in Natural Language Processing (NLP)
 """
 
-from .api import Api
-from .ner_interface import NerInterface
-from .spacy_ner_service import SpacyNerService
+from abc import ABC, abstractmethod
+
+class NerInterface(ABC):
+    @abstractmethod
+    def extract(self: object, text: str):
+        pass
