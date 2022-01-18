@@ -57,11 +57,19 @@ class NamedEntityEncoder(json.JSONEncoder):
 
             json_data = {
                 "text": o.text,
-                "score": o.score.name,
-                "type": o.type.name,
                 "begin_offset": o.begin_offset,
                 "end_offset": o.end_offset,
                 }
+
+            try:
+                json_data["score"] = o.score.name
+            except AttributeError:
+                pass
+
+            try:
+                json_data["type"] = o.type.name
+            except AttributeError:
+                pass
 
             try:
                 json_data["aws_score"] = o.aws_score

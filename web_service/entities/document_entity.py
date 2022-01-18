@@ -70,16 +70,16 @@ class DocumentEntity(Base):
 
         session = session_factory()
         self.status = "PENDING"
-        self.uploaded_date = str(uploaded_date)
-        self.author = str(author)
-        self.creator = str(creator)
-        self.producer = str(producer)
-        self.subject = str(subject)
-        self.title = str(title)
-        self.number_of_pages = number_of_pages
-        self.raw_info = str(raw_info)
-        self.content = str(content)
-        self.named_entities = str(named_entities)
+        if uploaded_date is not None: self.uploaded_date = str(uploaded_date)
+        if author is not None: self.author = str(author)
+        if creator is not None: self.creator = str(creator)
+        if producer is not None: self.producer = str(producer)
+        if subject is not None: self.subject = str(subject)
+        if title is not None: self.title = str(title)
+        if number_of_pages is not None: self.number_of_pages = number_of_pages
+        if raw_info is not None: self.raw_info = str(raw_info)
+        if content is not None: self.content = str(content)
+        if named_entities is not None: self.named_entities = str(named_entities)
         session.add(self)
         session.commit()
         # We save the ID cause it will wiped after the session.close()
@@ -106,16 +106,16 @@ class DocumentEntity(Base):
         session = session_factory()
         pdf_entity = session.query(DocumentEntity).get(object_id)
         pdf_entity.status = "SUCCESS"
-        pdf_entity.uploaded_date = str(uploaded_date)
-        pdf_entity.author = str(author)
-        pdf_entity.creator = str(creator)
-        pdf_entity.producer = str(producer)
-        pdf_entity.subject = str(subject)
-        pdf_entity.title = str(title)
-        pdf_entity.number_of_pages = number_of_pages
-        pdf_entity.raw_info = str(raw_info)
-        pdf_entity.content = str(content)
-        pdf_entity.named_entities = str(named_entities)
+        if uploaded_date is not None: pdf_entity.uploaded_date = str(uploaded_date)
+        if author is not None: pdf_entity.author = str(author)
+        if creator is not None: pdf_entity.creator = str(creator)
+        if producer is not None: pdf_entity.producer = str(producer)
+        if subject is not None: pdf_entity.subject = str(subject)
+        if title is not None: pdf_entity.title = str(title)
+        if number_of_pages is not None: pdf_entity.number_of_pages = number_of_pages
+        if raw_info is not None: pdf_entity.raw_info = str(raw_info)
+        if content is not None: pdf_entity.content = str(content)
+        if named_entities is not None: pdf_entity.named_entities = str(named_entities)
         session.commit()
         # We save the ID cause it will wiped after the session.close()
         self.internal_id = self.id

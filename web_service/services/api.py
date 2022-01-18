@@ -5,6 +5,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 """
 
 import json
+from json import JSONDecodeError
 from pathlib import Path
 from flask import Response, render_template, current_app
 from werkzeug.utils import secure_filename
@@ -132,7 +133,11 @@ class Api:
                 data["title"] = user_obj.title
                 data["number_of_pages"] = user_obj.number_of_pages
                 data["raw_info"] = user_obj.raw_info
-                data["named_entities"] = json.loads(user_obj.named_entities)
+                if user_obj.named_entities is not None:
+                    try:
+                        data["named_entities"] = json.loads(user_obj.named_entities)
+                    except JSONDecodeError:
+                        data["named_entities"] = None
                 # Converting the object to JSON string
                 json_data = json.dumps(data)
                 # We leave the for and return the first element
