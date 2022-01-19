@@ -35,6 +35,18 @@ class Config:
             print(f"Error in file config/config.ini: {err=}, {type(err)=}", file=sys.stderr)
             self.ner_methods = "nltk spacy"
 
+        try:
+            self.aws_region = config.get("DEFAULT","aws_region")
+        except configparser.NoOptionError as err:
+            print(f"Error in file config/config.ini: {err=}, {type(err)=}", file=sys.stderr)
+            self.aws_region = "us-east-1"
+        
+        try:
+            self.max_char_per_aws_request = config.get("DEFAULT","max_char_per_aws_request")
+        except configparser.NoOptionError as err:
+            print(f"Error in file config/config.ini: {err=}, {type(err)=}", file=sys.stderr)
+            self.max_char_per_aws_request = "4900"
+
     def get_upload_temp_folder(self):
         """Returns upload_temp_folder"""
         return self.upload_temp_folder
@@ -46,3 +58,11 @@ class Config:
     def get_ner_methods(self):
         """Returns allowed_extensions"""
         return self.ner_methods
+
+    def get_aws_region(self):
+        """Returns allowed_extensions"""
+        return self.aws_region
+
+    def get_max_char_per_aws_request(self):
+        """Returns allowed_extensions"""
+        return self.max_char_per_aws_request

@@ -15,6 +15,7 @@ from web_service.common.config import Config
 from .named_entity import NamedEntity, NamedEntityEncoder
 from .named_entity import NamedEntityScoreEnum, NamedEntityTypeEnum
 from web_service.services.spacy_ner_service import SpacyNerService
+from web_service.services.aws_comprehend_ner_service import AwsComprehendNerService
 
 class DocumentEntity(Base):
     """Class for representing a generic document entity and his Data Access Object
@@ -171,7 +172,7 @@ class DocumentEntity(Base):
         ner_services = []
         ner_methods = self.config.get_ner_methods()
         if "aws-comprehend" in ner_methods:
-            print("AWS Comprehend NER method enabled")
+            ner_services.append(AwsComprehendNerService(self.config.get_aws_region()))
         if "nltk" in ner_methods:
             print("NLTK NER method enabled")
         if "spacy" in ner_methods:

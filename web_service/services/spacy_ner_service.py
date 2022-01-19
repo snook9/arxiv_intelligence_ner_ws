@@ -6,7 +6,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import spacy
 from .ner_interface import NerInterface
-from web_service.entities.named_entity import NamedEntity, NamedEntityScoreEnum, NamedEntityTypeEnum
+from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum
 
 class SpacyNerService(NerInterface):
 
@@ -34,8 +34,7 @@ class SpacyNerService(NerInterface):
             return NamedEntityTypeEnum.QUANTITY
         return NamedEntityTypeEnum.OTHER
 
-    def extract(self: object, text: str):
-        
+    def extract(self: object, text: str):        
         nlp = spacy.load("en_core_web_sm")
         doc = nlp(text)
 
