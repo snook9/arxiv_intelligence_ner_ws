@@ -58,7 +58,8 @@ class DocumentEntity(Base):
     def _binary_search(self, named_entities, target_begin_offset) -> NamedEntity:
         """This algorithm is a binary search
         It search in the named_entities list,
-        the named entity which match with target_begin_offset
+        the named entity which match with target_begin_offset.
+        The named_entities list must be sorted by begin_offset field
         """
         a = 0
         b = len(named_entities)
@@ -76,6 +77,24 @@ class DocumentEntity(Base):
             return named_entities[a]
 
         return None
+
+    def _merge(self, named_entities_1, named_entities_2) -> list:
+        """Merge distinct the named_entities_2 list in the named_entities_1 list
+        These two lists must be sorted by begin_offset field
+        """
+        for named_entity in named_entities_1:
+            # We search the named_entity in the named_entities_2 list
+            named_entity_searched = self._binary_search(named_entities_2, named_entity.begin_offset)
+            # If we have found it and the text match the current named entity in named_entities_1 list
+            if named_entity_searched is not None and (named_entity_searched.text == named_entity.text):
+                # If there is an aws_score, we keep it
+                if named_entity_searched.aws_score is not None:
+                    named_entity.aws_score = named_entity_searched.aws_score
+                # We remove the merged entity from the named_entities_2 list
+                named_entities_2.remove(named_entity_searched)
+        # All named entities not merged are added to the named_entities_1 list
+        named_entities_1.extend(named_entities_2)
+        return named_entities_1
 
     def insert(
             self,
@@ -205,12 +224,7 @@ class DocumentEntity(Base):
         for ner_service in ner_services:
             named_entities.extend(ner_service.extract(text))
 
-        named_entity_searched = self._binary_search(named_entities, 491)
-        if named_entity_searched is not None:
-            print(named_entity_searched.text)
-            print(named_entity_searched.begin_offset)
-        else:
-            print("Entity Not Found!")
+        named_entities_2 = []
 
         named_entity_1 = NamedEntity()
         named_entity_1.text = "Jean Luc"
@@ -220,17 +234,26 @@ class DocumentEntity(Base):
         named_entity_1.end_offset = named_entity_1.begin_offset + len(named_entity_1.text)
 
         named_entity_2 = NamedEntity()
-        named_entity_2.text = "AIRBUS"
+        named_entity_2.text = "Amos Azaria"
         named_entity_2.score = NamedEntityScoreEnum.HIGH
         named_entity_2.aws_score = 0.98
-        named_entity_2.type = NamedEntityTypeEnum.ORGANIZATION
-        named_entity_2.begin_offset = 526
-        named_entity_2.end_offset = named_entity_1.begin_offset + len(named_entity_1.text)
+        named_entity_2.type = NamedEntityTypeEnum.PERSON
+        named_entity_2.begin_offset = 491
+        named_entity_2.end_offset = named_entity_2.begin_offset + len(named_entity_2.text)
 
-        named_entities.append(named_entity_1)
-        named_entities.append(named_entity_2)
+        named_entity_3 = NamedEntity()
+        named_entity_3.text = "Yitzhak Spielberg"
+        named_entity_3.score = NamedEntityScoreEnum.HIGH
+        named_entity_3.aws_score = 0.95
+        named_entity_3.type = NamedEntityTypeEnum.ORGANIZATION
+        named_entity_3.begin_offset = 1810
+        named_entity_3.end_offset = named_entity_3.begin_offset + len(named_entity_3.text)
 
-        return named_entities
+        named_entities_2.append(named_entity_1)
+        named_entities_2.append(named_entity_2)
+        named_entities_2.append(named_entity_3)
+
+        return self._merge(named_entities, named_entities_2)
 
     @staticmethod
     def extract_document(filename: Path):
