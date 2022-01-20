@@ -55,6 +55,28 @@ class DocumentEntity(Base):
         """Initialize the object"""
         self.config = config
 
+    def _binary_search(self, named_entities, target_begin_offset) -> NamedEntity:
+        """This algorithm is a binary search
+        It search in the named_entities list,
+        the named entity which match with target_begin_offset
+        """
+        a = 0
+        b = len(named_entities)
+        if b == 0:
+            # If the list is empty, we leave
+            return None
+        while b > a + 1:
+            m = (a + b) // 2
+            if named_entities[m].begin_offset > target_begin_offset:
+                b = m
+            else:
+                a = m
+        
+        if named_entities[a].begin_offset == target_begin_offset:
+            return named_entities[a]
+
+        return None
+
     def insert(
             self,
             uploaded_date: str = None,
@@ -182,6 +204,13 @@ class DocumentEntity(Base):
 
         for ner_service in ner_services:
             named_entities.extend(ner_service.extract(text))
+
+        named_entity_searched = self._binary_search(named_entities, 491)
+        if named_entity_searched is not None:
+            print(named_entity_searched.text)
+            print(named_entity_searched.begin_offset)
+        else:
+            print("Entity Not Found!")
 
         named_entity_1 = NamedEntity()
         named_entity_1.text = "Jean Luc"
