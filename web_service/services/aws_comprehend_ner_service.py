@@ -8,7 +8,7 @@ import boto3
 import textwrap
 from botocore.exceptions import NoCredentialsError, ClientError
 from .ner_interface import NerInterface
-from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum
+from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum, NamedEntityScoreEnum
 
 class AwsComprehendNerService(NerInterface):
 
@@ -58,6 +58,7 @@ class AwsComprehendNerService(NerInterface):
                     named_entity.begin_offset = entity["BeginOffset"]
                     named_entity.end_offset = entity["EndOffset"]
                     named_entity.aws_score = entity["Score"]
+                    named_entity.score = NamedEntityScoreEnum.LOW
                     named_entities.append(named_entity)
             except NoCredentialsError:
                 print("Unable to locate AWS credentials")

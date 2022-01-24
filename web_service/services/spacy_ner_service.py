@@ -6,7 +6,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import spacy
 from .ner_interface import NerInterface
-from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum
+from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum, NamedEntityScoreEnum
 
 class SpacyNerService(NerInterface):
 
@@ -46,6 +46,7 @@ class SpacyNerService(NerInterface):
             named_entity.type = self._convert_label_to_type_enum(ent.label_)
             named_entity.begin_offset = ent.start
             named_entity.end_offset = ent.end
+            named_entity.score = NamedEntityScoreEnum.LOW
 
             named_entities.append(named_entity)
 

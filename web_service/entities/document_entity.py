@@ -12,8 +12,7 @@ from pathlib import Path
 from sqlalchemy import Column, Integer, String
 from web_service.common.base import Base, session_factory
 from web_service.common.config import Config
-from .named_entity import NamedEntity, NamedEntityEncoder
-from .named_entity import NamedEntityScoreEnum, NamedEntityTypeEnum
+from .named_entity import NamedEntityScoreEnum, NamedEntityEncoder
 from web_service.services.spacy_ner_service import SpacyNerService
 from web_service.services.aws_comprehend_ner_service import AwsComprehendNerService
 
@@ -117,6 +116,11 @@ class DocumentEntity(Base):
                             named_entity_searched.aws_score = named_entity.aws_score
                     except AttributeError:
                         pass
+                    # Also, we increment the score
+                    if named_entity_searched.score == NamedEntityScoreEnum.LOW:
+                        named_entity_searched.score = NamedEntityScoreEnum.MEDIUM
+                    elif named_entity_searched.score == NamedEntityScoreEnum.MEDIUM:
+                        named_entity_searched.score = NamedEntityScoreEnum.HIGH
                 # Else, we have no found the named entity
                 else:
                     # So, we insert it as new element in the biggest list
@@ -243,7 +247,7 @@ class DocumentEntity(Base):
         if "aws-comprehend" in ner_methods:
             ner_services.append(AwsComprehendNerService(self.config.get_aws_region()))
         if "nltk" in ner_methods:
-            print("NLTK NER method enabled")
+            print("NLTK NER method not supported yet")
         if "spacy" in ner_methods:
             ner_services.append(SpacyNerService())
 
