@@ -55,17 +55,24 @@ class DocumentEntity(Base):
         """Initialize the object"""
         self.config = config
 
-    def _binary_search(self, named_entities, target_begin_offset) -> NamedEntity:
+    def _binary_search(self, named_entities, target_begin_offset):
         """This algorithm is a binary search
         It search in the named_entities list,
         the named entity which match with target_begin_offset.
         The named_entities list must be sorted by begin_offset field
+        Args:
+            named_entities (list<NamedEntity>): list where search the offset.
+            target_begin_offset (int): offset to search in the list.
+        Returns:
+            index: the index of the offset searched, otherwise the nearest index if the offset was not found, 
+            None in case of error.
+            named_entity: the named_entity matching with the specified offset, otherwise - returns None.
         """
         a = 0
         b = len(named_entities)
         if b == 0:
             # If the list is empty, we leave
-            return None
+            return None, None
         while b > a + 1:
             m = (a + b) // 2
             if named_entities[m].begin_offset > target_begin_offset:
@@ -74,9 +81,9 @@ class DocumentEntity(Base):
                 a = m
         
         if named_entities[a].begin_offset == target_begin_offset:
-            return named_entities[a]
+            return a, named_entities[a]
 
-        return None
+        return a, None
 
     def _merge(self, named_entities_1, named_entities_2) -> list:
         """Merge distinct the named_entities_2 list in the named_entities_1 list
@@ -84,16 +91,26 @@ class DocumentEntity(Base):
         """
         for named_entity in named_entities_1:
             # We search the named_entity in the named_entities_2 list
-            named_entity_searched = self._binary_search(named_entities_2, named_entity.begin_offset)
+            index, named_entity_searched = self._binary_search(named_entities_2, named_entity.begin_offset)
             # If we have found it and the text match the current named entity in named_entities_1 list
-            if named_entity_searched is not None and (named_entity_searched.text == named_entity.text):
+            if index is not None and \
+                named_entity_searched is not None \
+                and (named_entity_searched.text == named_entity.text):
                 # If there is an aws_score, we keep it
                 if named_entity_searched.aws_score is not None:
                     named_entity.aws_score = named_entity_searched.aws_score
                 # We remove the merged entity from the named_entities_2 list
+                # TODO le remove ne fonctionne pas ici
                 named_entities_2.remove(named_entity_searched)
+
         # All named entities not merged are added to the named_entities_1 list
-        named_entities_1.extend(named_entities_2)
+        # Before, we need to sort it, so we search the best index in named_entities_1 list
+        for named_entity in named_entities_2:
+            result = self._binary_search(named_entities_1, named_entity.begin_offset)
+            if result[0] is not None:
+                named_entities_1.insert(result[0]+1, named_entity)
+
+        #named_entities_1.extend(named_entities_2)
         return named_entities_1
 
     def insert(
@@ -227,26 +244,26 @@ class DocumentEntity(Base):
         named_entities_2 = []
 
         named_entity_1 = NamedEntity()
-        named_entity_1.text = "Jean Luc"
+        named_entity_1.text = "Jean Luc inséré"
         named_entity_1.score = NamedEntityScoreEnum.MEDIUM
         named_entity_1.type = NamedEntityTypeEnum.PERSON
-        named_entity_1.begin_offset = 120
+        named_entity_1.begin_offset = 12
         named_entity_1.end_offset = named_entity_1.begin_offset + len(named_entity_1.text)
 
         named_entity_2 = NamedEntity()
-        named_entity_2.text = "Amos Azaria"
+        named_entity_2.text = "Matt Luckcuck"
         named_entity_2.score = NamedEntityScoreEnum.HIGH
         named_entity_2.aws_score = 0.98
         named_entity_2.type = NamedEntityTypeEnum.PERSON
-        named_entity_2.begin_offset = 491
+        named_entity_2.begin_offset = 15
         named_entity_2.end_offset = named_entity_2.begin_offset + len(named_entity_2.text)
 
         named_entity_3 = NamedEntity()
-        named_entity_3.text = "Yitzhak Spielberg"
+        named_entity_3.text = "Vassilios A. Tsachouridis"
         named_entity_3.score = NamedEntityScoreEnum.HIGH
         named_entity_3.aws_score = 0.95
         named_entity_3.type = NamedEntityTypeEnum.ORGANIZATION
-        named_entity_3.begin_offset = 1810
+        named_entity_3.begin_offset = 468
         named_entity_3.end_offset = named_entity_3.begin_offset + len(named_entity_3.text)
 
         named_entities_2.append(named_entity_1)
