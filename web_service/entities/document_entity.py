@@ -12,9 +12,9 @@ from pathlib import Path
 from sqlalchemy import Column, Integer, String
 from web_service.common.base import Base, session_factory
 from web_service.common.config import Config
-from .named_entity import NamedEntityScoreEnum, NamedEntityEncoder
 from web_service.services.spacy_ner_service import SpacyNerService
 from web_service.services.aws_comprehend_ner_service import AwsComprehendNerService
+from .named_entity import NamedEntityScoreEnum, NamedEntityEncoder
 
 class DocumentEntity(Base):
     """Class for representing a generic document entity and his Data Access Object
@@ -54,7 +54,8 @@ class DocumentEntity(Base):
         """Initialize the object"""
         self.config = config
 
-    def _binary_search(self, named_entities, target_begin_offset):
+    @staticmethod
+    def _binary_search(named_entities, target_begin_offset):
         """This algorithm is a binary search
         It search in the named_entities list,
         the named entity which match with target_begin_offset.
@@ -63,26 +64,28 @@ class DocumentEntity(Base):
             named_entities (list<NamedEntity>): list where search the offset.
             target_begin_offset (int): offset to search in the list.
         Returns:
-            index: the index of the offset searched, otherwise the nearest index if the offset was not found, 
+            index: the index of the offset searched,
+            otherwise the nearest index if the offset was not found,
             None in case of error.
-            named_entity: the named_entity matching with the specified offset, otherwise - returns None.
+            named_entity: the named_entity matching with the specified offset,
+            otherwise - returns None.
         """
-        a = 0
-        b = len(named_entities)
-        if b == 0:
+        aaa = 0
+        bbb = len(named_entities)
+        if bbb == 0:
             # If the list is empty, we leave
             return None, None
-        while b > a + 1:
-            m = (a + b) // 2
-            if named_entities[m].begin_offset > target_begin_offset:
-                b = m
+        while bbb > aaa + 1:
+            mmm = (aaa + bbb) // 2
+            if named_entities[mmm].begin_offset > target_begin_offset:
+                bbb = mmm
             else:
-                a = m
-        
-        if named_entities[a].begin_offset == target_begin_offset:
-            return a, named_entities[a]
+                aaa = mmm
 
-        return a, None
+        if named_entities[aaa].begin_offset == target_begin_offset:
+            return aaa, named_entities[aaa]
+
+        return aaa, None
 
     def _merge(self, named_entities_1, named_entities_2) -> list:
         """Merge distinct the two named_entities_1 and named_entities_2 lists
@@ -104,7 +107,10 @@ class DocumentEntity(Base):
         # We merge each element of the smallest list in the biggest list
         for named_entity in smallest_list:
             # We search the named_entity in the biggest list
-            index, named_entity_searched = self._binary_search(biggest_list, named_entity.begin_offset)
+            index, named_entity_searched = self._binary_search(
+                biggest_list,
+                named_entity.begin_offset
+                )
             if index is not None:
                 # If we have found it and the text match the current named entity
                 # No need to insert
@@ -144,16 +150,26 @@ class DocumentEntity(Base):
 
         session = session_factory()
         self.status = "PENDING"
-        if uploaded_date is not None: self.uploaded_date = str(uploaded_date)
-        if author is not None: self.author = str(author)
-        if creator is not None: self.creator = str(creator)
-        if producer is not None: self.producer = str(producer)
-        if subject is not None: self.subject = str(subject)
-        if title is not None: self.title = str(title)
-        if number_of_pages is not None: self.number_of_pages = number_of_pages
-        if raw_info is not None: self.raw_info = str(raw_info)
-        if content is not None: self.content = str(content)
-        if named_entities is not None: self.named_entities = str(named_entities)
+        if uploaded_date is not None:
+            self.uploaded_date = str(uploaded_date)
+        if author is not None:
+            self.author = str(author)
+        if creator is not None:
+            self.creator = str(creator)
+        if producer is not None:
+            self.producer = str(producer)
+        if subject is not None:
+            self.subject = str(subject)
+        if title is not None:
+            self.title = str(title)
+        if number_of_pages is not None:
+            self.number_of_pages = number_of_pages
+        if raw_info is not None:
+            self.raw_info = str(raw_info)
+        if content is not None:
+            self.content = str(content)
+        if named_entities is not None:
+            self.named_entities = str(named_entities)
         session.add(self)
         session.commit()
         # We save the ID cause it will wiped after the session.close()
@@ -180,16 +196,26 @@ class DocumentEntity(Base):
         session = session_factory()
         pdf_entity = session.query(DocumentEntity).get(object_id)
         pdf_entity.status = "SUCCESS"
-        if uploaded_date is not None: pdf_entity.uploaded_date = str(uploaded_date)
-        if author is not None: pdf_entity.author = str(author)
-        if creator is not None: pdf_entity.creator = str(creator)
-        if producer is not None: pdf_entity.producer = str(producer)
-        if subject is not None: pdf_entity.subject = str(subject)
-        if title is not None: pdf_entity.title = str(title)
-        if number_of_pages is not None: pdf_entity.number_of_pages = number_of_pages
-        if raw_info is not None: pdf_entity.raw_info = str(raw_info)
-        if content is not None: pdf_entity.content = str(content)
-        if named_entities is not None: pdf_entity.named_entities = str(named_entities)
+        if uploaded_date is not None:
+            pdf_entity.uploaded_date = str(uploaded_date)
+        if author is not None:
+            pdf_entity.author = str(author)
+        if creator is not None:
+            pdf_entity.creator = str(creator)
+        if producer is not None:
+            pdf_entity.producer = str(producer)
+        if subject is not None:
+            pdf_entity.subject = str(subject)
+        if title is not None:
+            pdf_entity.title = str(title)
+        if number_of_pages is not None:
+            pdf_entity.number_of_pages = number_of_pages
+        if raw_info is not None:
+            pdf_entity.raw_info = str(raw_info)
+        if content is not None:
+            pdf_entity.content = str(content)
+        if named_entities is not None:
+            pdf_entity.named_entities = str(named_entities)
         session.commit()
         # We save the ID cause it will wiped after the session.close()
         self.internal_id = self.id
@@ -262,8 +288,7 @@ class DocumentEntity(Base):
 
         return named_entities
 
-    @staticmethod
-    def extract_document(filename: Path):
+    def extract_document(self, filename: Path):
         """Method for extracting data and metadata from a document
 
         You must overwrite extract_document() by your own code
@@ -275,7 +300,7 @@ class DocumentEntity(Base):
         with open(filename, "r", encoding='utf-8') as file:
             # Extracting the text (content)
             content = file.read()
-            document = DocumentEntity()
+            document = DocumentEntity(self.config)
             document.content = content
             return document
 

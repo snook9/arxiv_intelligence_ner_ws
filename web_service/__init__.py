@@ -53,15 +53,19 @@ def create_app(test_config=None):
         # If the folder doesn't exist, we create it
         folder.mkdir()
 
-    swagger = Swagger(app, template=swagger_template, config=swagger_config)
+    Swagger(app, template=swagger_template, config=swagger_config)
 
     return app
 
 swagger_template = dict(
     info = {
-        "title": LazyString(lambda: "Swagger UI document of the arXiv Intelligence NER Web Service"),
+        "title": LazyString(
+            lambda: "Swagger UI document of the arXiv Intelligence NER Web Service"
+            ),
         "version": LazyString(lambda: "0.1"),
-        "description": LazyString(lambda: "This document describes the web service interface specification."),
+        "description": LazyString(
+            lambda: "This document describes the web service interface specification."
+            ),
     },
     host = LazyString(lambda: request.host)
 )

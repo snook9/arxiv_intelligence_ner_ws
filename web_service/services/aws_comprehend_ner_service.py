@@ -4,39 +4,44 @@ Authors: Jonathan CASSAING
 Web service specialized in Named Entity Recognition (NER), in Natural Language Processing (NLP)
 """
 
-import boto3
 import textwrap
+import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
-from .ner_interface import NerInterface
 from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum, NamedEntityScoreEnum
+from .ner_interface import NerInterface
 
 class AwsComprehendNerService(NerInterface):
+    """NER Service from AWS Comprehend"""
 
     def __init__(self, aws_region: str = "us-east-1", max_char_per_request: int = 4900):
         self.aws_region = aws_region
         self.max_char_per_request = max_char_per_request
 
-    def _convert_type_to_type_enum(self, type: str) -> NamedEntityTypeEnum:
+    @staticmethod
+    def _convert_type_to_type_enum(type_str: str) -> NamedEntityTypeEnum:
         """Convert an AWS type to NamedEntityTypeEnum
         See: https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html
         """
-        if type == "DATE":
-            return NamedEntityTypeEnum.DATE
-        if type == "COMMERCIAL_ITEM":
-            return NamedEntityTypeEnum.PRODUCT
-        if type == "EVENT":
-            return NamedEntityTypeEnum.EVENT
-        if type == "LOCATION":
-            return NamedEntityTypeEnum.LOCATION
-        if type == "ORGANIZATION":
-            return NamedEntityTypeEnum.ORGANIZATION
-        if type == "PERSON":
-            return NamedEntityTypeEnum.PERSON
-        if type == "QUANTITY":
-            return NamedEntityTypeEnum.QUANTITY
-        if type == "TITLE":
-            return NamedEntityTypeEnum.TITLE
-        return NamedEntityTypeEnum.OTHER
+        type_enum = None
+        if type_str == "DATE":
+            type_enum = NamedEntityTypeEnum.DATE
+        elif type_str == "COMMERCIAL_ITEM":
+            type_enum = NamedEntityTypeEnum.PRODUCT
+        elif type_str == "EVENT":
+            type_enum = NamedEntityTypeEnum.EVENT
+        elif type_str == "LOCATION":
+            type_enum = NamedEntityTypeEnum.LOCATION
+        elif type_str == "ORGANIZATION":
+            type_enum = NamedEntityTypeEnum.ORGANIZATION
+        elif type_str == "PERSON":
+            type_enum = NamedEntityTypeEnum.PERSON
+        elif type_str == "QUANTITY":
+            type_enum = NamedEntityTypeEnum.QUANTITY
+        elif type_str == "TITLE":
+            type_enum = NamedEntityTypeEnum.TITLE
+        else:
+            type_enum = NamedEntityTypeEnum.OTHER
+        return type_enum
 
     def extract(self, text: str):
         # We split the text for each 'max_char_per_request' caracters
@@ -64,7 +69,9 @@ class AwsComprehendNerService(NerInterface):
             except NoCredentialsError:
                 print("Unable to locate AWS credentials")
             except ClientError:
-                print("An error occurred (UnrecognizedClientException) when calling the DetectEntities operation: The security AWS token included in the request is invalid")
+                print("An error occurred (UnrecognizedClientException) \
+                when calling the DetectEntities operation: \
+                The security AWS token included in the request is invalid")
             offset += len(line)
 
         # We must sort the list by begin_offset

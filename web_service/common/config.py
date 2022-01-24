@@ -40,7 +40,7 @@ class Config:
         except configparser.NoOptionError as err:
             print(f"Error in file config/config.ini: {err=}, {type(err)=}", file=sys.stderr)
             self.aws_region = "us-east-1"
-        
+
         try:
             self.max_char_per_aws_request = config.get("DEFAULT","max_char_per_aws_request")
         except configparser.NoOptionError as err:
@@ -54,7 +54,7 @@ class Config:
     def get_allowed_extensions(self):
         """Returns allowed_extensions"""
         return self.allowed_extensions
-    
+
     def get_ner_methods(self):
         """Returns allowed_extensions"""
         return self.ner_methods
