@@ -249,38 +249,14 @@ class DocumentEntity(Base):
 
         named_entities = []
 
+        # For each NER service
         for ner_service in ner_services:
-            named_entities.extend(ner_service.extract(text))
+            # We get the named entities list
+            temp_named_entities_list = ner_service.extract(text)
+            # We merge the named entities list with the previous list
+            named_entities = self._merge(named_entities, temp_named_entities_list)
 
-        named_entities_2 = []
-
-        named_entity_1 = NamedEntity()
-        named_entity_1.text = "Jean Luc inséré"
-        named_entity_1.score = NamedEntityScoreEnum.MEDIUM
-        named_entity_1.type = NamedEntityTypeEnum.PERSON
-        named_entity_1.begin_offset = 12
-        named_entity_1.end_offset = named_entity_1.begin_offset + len(named_entity_1.text)
-
-        named_entity_2 = NamedEntity()
-        named_entity_2.text = "Matt Luckcuck"
-        named_entity_2.score = NamedEntityScoreEnum.HIGH
-        named_entity_2.aws_score = 0.98
-        named_entity_2.type = NamedEntityTypeEnum.PERSON
-        named_entity_2.begin_offset = 15
-        named_entity_2.end_offset = named_entity_2.begin_offset + len(named_entity_2.text)
-
-        named_entity_3 = NamedEntity()
-        named_entity_3.text = "Vassilios A. Tsachouridis"
-        named_entity_3.score = NamedEntityScoreEnum.HIGH
-        named_entity_3.type = NamedEntityTypeEnum.ORGANIZATION
-        named_entity_3.begin_offset = 468
-        named_entity_3.end_offset = named_entity_3.begin_offset + len(named_entity_3.text)
-
-        named_entities_2.append(named_entity_1)
-        named_entities_2.append(named_entity_2)
-        named_entities_2.append(named_entity_3)
-
-        return self._merge(named_entities, named_entities_2)
+        return named_entities
 
     @staticmethod
     def extract_document(filename: Path):
