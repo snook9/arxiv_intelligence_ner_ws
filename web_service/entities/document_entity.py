@@ -86,32 +86,43 @@ class DocumentEntity(Base):
         return a, None
 
     def _merge(self, named_entities_1, named_entities_2) -> list:
-        """Merge distinct the named_entities_2 list in the named_entities_1 list
+        """Merge distinct the two named_entities_1 and named_entities_2 lists
         These two lists must be sorted by begin_offset field
+        Args:
+            named_entities_1 (list<NamedEntity>): list to merge.
+            named_entities_2 (list<NamedEntity>): list to merge.
+        Returns:
+            list<NamedEntity>: merged list.
         """
-        for named_entity in named_entities_1:
-            # We search the named_entity in the named_entities_2 list
-            index, named_entity_searched = self._binary_search(named_entities_2, named_entity.begin_offset)
-            # If we have found it and the text match the current named entity in named_entities_1 list
-            if index is not None and \
-                named_entity_searched is not None \
-                and (named_entity_searched.text == named_entity.text):
-                # If there is an aws_score, we keep it
-                if named_entity_searched.aws_score is not None:
-                    named_entity.aws_score = named_entity_searched.aws_score
-                # We remove the merged entity from the named_entities_2 list
-                # TODO le remove ne fonctionne pas ici
-                named_entities_2.remove(named_entity_searched)
+        # First, we search the smallest list
+        if len(named_entities_1) < len(named_entities_2):
+            smallest_list = named_entities_1
+            biggest_list = named_entities_2
+        else:
+            smallest_list = named_entities_2
+            biggest_list = named_entities_1
 
-        # All named entities not merged are added to the named_entities_1 list
-        # Before, we need to sort it, so we search the best index in named_entities_1 list
-        for named_entity in named_entities_2:
-            result = self._binary_search(named_entities_1, named_entity.begin_offset)
-            if result[0] is not None:
-                named_entities_1.insert(result[0]+1, named_entity)
+        # We merge each element of the smallest list in the biggest list
+        for named_entity in smallest_list:
+            # We search the named_entity in the biggest list
+            index, named_entity_searched = self._binary_search(biggest_list, named_entity.begin_offset)
+            if index is not None:
+                # If we have found it and the text match the current named entity
+                # No need to insert
+                if named_entity_searched is not None \
+                    and (named_entity_searched.text == named_entity.text):
+                    # But we just keep the aws_score (if exist)
+                    try:
+                        if named_entity.aws_score is not None:
+                            named_entity_searched.aws_score = named_entity.aws_score
+                    except AttributeError:
+                        pass
+                # Else, we have no found the named entity
+                else:
+                    # So, we insert it as new element in the biggest list
+                    biggest_list.insert(index+1, named_entity)
 
-        #named_entities_1.extend(named_entities_2)
-        return named_entities_1
+        return biggest_list
 
     def insert(
             self,
@@ -261,7 +272,6 @@ class DocumentEntity(Base):
         named_entity_3 = NamedEntity()
         named_entity_3.text = "Vassilios A. Tsachouridis"
         named_entity_3.score = NamedEntityScoreEnum.HIGH
-        named_entity_3.aws_score = 0.95
         named_entity_3.type = NamedEntityTypeEnum.ORGANIZATION
         named_entity_3.begin_offset = 468
         named_entity_3.end_offset = named_entity_3.begin_offset + len(named_entity_3.text)
