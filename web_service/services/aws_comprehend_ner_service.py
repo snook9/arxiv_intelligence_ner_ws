@@ -46,6 +46,7 @@ class AwsComprehendNerService(NerInterface):
         comprehend = boto3.client(service_name='comprehend', region_name=self.aws_region)
 
         named_entities = []
+        offset = 0
         for line in lines:
             try:
                 # We launch an AWS request
@@ -55,8 +56,8 @@ class AwsComprehendNerService(NerInterface):
                     named_entity = NamedEntity()
                     named_entity.text = entity["Text"]
                     named_entity.type = self._convert_type_to_type_enum(entity["Type"])
-                    named_entity.begin_offset = entity["BeginOffset"]
-                    named_entity.end_offset = entity["EndOffset"]
+                    named_entity.begin_offset = entity["BeginOffset"] + offset
+                    named_entity.end_offset = entity["EndOffset"] + offset
                     named_entity.aws_score = entity["Score"]
                     named_entity.score = NamedEntityScoreEnum.LOW
                     named_entities.append(named_entity)
@@ -64,5 +65,9 @@ class AwsComprehendNerService(NerInterface):
                 print("Unable to locate AWS credentials")
             except ClientError:
                 print("An error occurred (UnrecognizedClientException) when calling the DetectEntities operation: The security AWS token included in the request is invalid")
+            offset += len(line)
+
+        # We must sort the list by begin_offset
+        named_entities.sort(key=lambda named_entity: named_entity.begin_offset)
 
         return named_entities
