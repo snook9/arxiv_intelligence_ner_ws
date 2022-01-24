@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>arXiv Intelligence NER Web Service</title>
+        <script>var message={{message}};</script>
+    </head>
+    <body>
+        <h1>arXiv Intelligence NER Web Service<h1>
+        <h3>Wellcome to the web service page, specialized in Named Entity Recognition (NER), in Natural Language Processing (NLP)</h3>
+        <h5>
+            RESTful API Web Service, support PDF files<br>
+            <a href="/apidocs">API documentation</a>
+        </h5>
+        <div class="container" style="color:Tomato;">{{message}}</div>
+        <form method=post enctype=multipart/form-data>
+        <input type=file name=file>
+        <input type=submit value=Upload>
+        </form>
+    </body>
+</html>

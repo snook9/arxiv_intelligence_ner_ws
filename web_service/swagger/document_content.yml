@@ -1,0 +1,19 @@
+openapi: 3.0.3
+tags:
+  - name: Content of a document 
+get:
+  description: None
+parameters:
+  - name: doc_id
+    in: path
+    description: Identifier of the document
+    type: integer
+    required: true
+    default: 1
+responses:
+    '200':
+          description: Successful response
+    '400':
+          description: Bad Request
+    '500':
+          description: Internal Server Error
