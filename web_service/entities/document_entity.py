@@ -85,7 +85,12 @@ class DocumentEntity(Base):
         if named_entities[aaa].begin_offset == target_begin_offset:
             return aaa, named_entities[aaa]
 
-        return aaa, None
+        if named_entities[aaa].begin_offset > target_begin_offset:
+            nearest_index = aaa
+        else:
+            nearest_index = bbb
+
+        return nearest_index, None
 
     def _merge(self, named_entities_1, named_entities_2) -> list:
         """Merge distinct the two named_entities_1 and named_entities_2 lists
@@ -130,7 +135,7 @@ class DocumentEntity(Base):
                 # Else, we have no found the named entity
                 else:
                     # So, we insert it as new element in the biggest list
-                    biggest_list.insert(index+1, named_entity)
+                    biggest_list.insert(index, named_entity)
 
         return biggest_list
 
