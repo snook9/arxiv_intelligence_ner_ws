@@ -49,8 +49,8 @@ class SpacyNerService(NerInterface):
             named_entity = NamedEntity()
             named_entity.text = ent.text
             named_entity.type = self._convert_label_to_type_enum(ent.label_)
-            named_entity.begin_offset = ent.start
-            named_entity.end_offset = ent.end
+            named_entity.begin_offset = ent.start_char
+            named_entity.end_offset = ent.end_char
             named_entity.score = NamedEntityScoreEnum.LOW
 
             named_entities.append(named_entity)
