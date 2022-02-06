@@ -58,6 +58,8 @@ class SpacyNerService(NerInterface):
 
             named_entities.append(named_entity)
 
-            print(ontology_service.build_ontology(named_entity))
+            ontology_service.build_ontology(named_entity)
+
+        ontology_service.save("tmp/temp.owl")
 
         return named_entities

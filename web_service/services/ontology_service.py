@@ -4,8 +4,9 @@ Authors: Jonathan CASSAING
 Web service specialized in Named Entity Recognition (NER), in Natural Language Processing (NLP)
 """
 
+from pathlib import Path
 from owlready2 import *
-from web_service.entities.named_entity import NamedEntity
+from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum
 
 class OntologyService():
     """Ontology service"""
@@ -21,9 +22,25 @@ class OntologyService():
         print(self._foaf["Document"])
 
     def build_ontology(self: object, named_entity: NamedEntity):
+        if named_entity.type == NamedEntityTypeEnum.PERSON:
+            with self._onto:
+                person = self._foaf.Person(named_entity.text)
+                # We split the text after the first space
+                full_name = named_entity.text.split(" ", 1)
+                try:
+                    # We suppose the first word is the first name
+                    person.firstName.append(full_name[0])
+                except IndexError:
+                    pass
+                try:
+                    # We rest is the last name
+                    person.lastName.append(full_name[1])
+                except IndexError:
+                    pass
+                return person
 
-        with self._foaf:
-            person = self._foaf["Person"]
-            person.lastName = named_entity.text
+        # Else, we return none
+        return None
 
-        return person.lastName
+    def save(self: object, filepath: Path):
+        self._onto.save(filepath)
