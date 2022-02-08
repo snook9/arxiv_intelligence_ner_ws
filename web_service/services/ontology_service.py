@@ -14,7 +14,12 @@ class OntologyService():
     def __init__(self: object):
         self._onto = get_ontology("file://owl/template-arxiv-intelligence.owl").load()
         #self._foaf = get_namespace("http://xmlns.com/foaf/0.1/")
-        self._foaf = get_ontology("http://xmlns.com/foaf/spec/index.rdf").load()
+        #self._foaf = get_ontology("http://xmlns.com/foaf/spec/index.rdf").load()
+
+        try:
+            self._foaf = self._onto.get_imported_ontologies().first().load()
+        except AttributeError as err:
+            print("Warning! the foaf ontology is not imported in the local ontology: {0}".format(err))
 
     def build_ontology(self: object, named_entity: NamedEntity):
         if named_entity.type == NamedEntityTypeEnum.PERSON:

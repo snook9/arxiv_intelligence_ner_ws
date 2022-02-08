@@ -8,3 +8,4 @@ from .api import Api
 from .ner_interface import NerInterface
 from .spacy_ner_service import SpacyNerService
 from .aws_comprehend_ner_service import AwsComprehendNerService
+from .ontology_service import OntologyService
