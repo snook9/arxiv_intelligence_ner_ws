@@ -57,7 +57,7 @@ class Api:
                         json.dumps(MessageEntity("No file part"), cls=MessageEncoder),
                         mimetype="application/json;charset=utf-8",
                     ), 400
-                    
+
                 # Else, we get the file
                 file = request.files["file"]
 
@@ -99,19 +99,19 @@ class Api:
                             # Check user input
                             secure_filename(filename)
                         )
-                        file = open(filepath, 'wb')
                         # Save the file in an upload folder
-                        file.write(response.read())
-                        file.close()
+                        with open(filepath, "wb") as file:
+                            file.write(response.read())
+                            file.close()
                 # Except, error in the given URL
                 except ValueError as err:
                     return Response(
-                        json.dumps(MessageEntity("Incorrect URL: {0}".format(err)), cls=MessageEncoder),
+                        json.dumps(MessageEntity(f"Incorrect URL: {err}"), cls=MessageEncoder),
                         mimetype="application/json;charset=utf-8",
                     ), 400
                 except urllib.error.URLError as err:
                     return Response(
-                        json.dumps(MessageEntity("Incorrect URL: {0}".format(err)), cls=MessageEncoder),
+                        json.dumps(MessageEntity(f"Incorrect URL: {err}"), cls=MessageEncoder),
                         mimetype="application/json;charset=utf-8",
                     ), 400
 
@@ -140,7 +140,7 @@ class Api:
                 ),
                 mimetype="application/json;charset=utf-8",
             ), 201
-        
+
         # Else, it's a basic GET method
         # Generate an index HTML page with an outstanding look & feel
         return render_template("index.html", title="NER Web Service")

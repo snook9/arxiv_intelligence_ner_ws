@@ -70,7 +70,7 @@ The file may look like:
 
     apt install pylint
     export PYTHONPATH="venv/lib/python3.9/site-packages/"
-    pylint --disable too-many-instance-attributes --disable too-few-public-methods --disable too-many-locals --disable too-many-arguments --disable c-extension-no-member web_service/*
+    pylint --disable too-many-return-statements --disable too-many-instance-attributes --disable too-few-public-methods --disable too-many-locals --disable too-many-arguments --disable c-extension-no-member web_service/*
 
 ## pytest
 

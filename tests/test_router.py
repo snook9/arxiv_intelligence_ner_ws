@@ -44,6 +44,18 @@ def test_get_document(client):
     response = client.get("/?doc_url=https://arxiv.org/ftp/arxiv/papers/2201/2201.05599.pdf")
     assert response.status_code == 201
 
+    # We get the json response
+    data = json.loads(response.get_data(as_text=True))
+
+    # We wait 8 sec to let the process finish
+    time.sleep(8)
+
+    # We check the metadata of the uploaded document
+    response = client.get("/document/metadata/" + str(data["id"]))
+    data = json.loads(response.get_data(as_text=True))
+    # If the process is SUCCESS
+    assert data["status"] == "SUCCESS"
+
 def test_get_document_metadata(client):
     """Test the /document/metadata/<id> route"""
     # We insert a first document in the database (in case the db is empty)

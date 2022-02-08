@@ -5,7 +5,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 """
 
 from pathlib import Path
-from owlready2 import *
+from owlready2 import get_ontology
 from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum
 
 class OntologyService():
@@ -19,9 +19,10 @@ class OntologyService():
         try:
             self._foaf = self._onto.get_imported_ontologies().first().load()
         except AttributeError as err:
-            print("Warning! the foaf ontology is not imported in the local ontology: {0}".format(err))
+            print(f"Warning! the foaf ontology is not imported in the local ontology: {err}")
 
     def build_ontology(self: object, named_entity: NamedEntity):
+        """Build an ontology from a named entity"""
         if named_entity.type == NamedEntityTypeEnum.PERSON:
             with self._onto:
                 person = self._foaf.Person(named_entity.text)
@@ -43,4 +44,5 @@ class OntologyService():
         return None
 
     def save(self: object, filepath: Path):
+        """Save the current ontology built in an OWL file"""
         self._onto.save(filepath)
