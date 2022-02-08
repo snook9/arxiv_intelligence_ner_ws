@@ -30,6 +30,20 @@ def test_post_document(client):
     response = client.post("/", data=data, content_type="multipart/form-data")
     assert response.status_code == 201
 
+def test_get_document(client):
+    """Test the index route"""
+    # Test indicating a wrong URL type
+    response = client.get("/?doc_url=ceciestunefichierabsent")
+    assert response.status_code == 400
+
+    # Test indicating a wrong URL
+    response = client.get("/?doc_url=https://ceciestunemauvaiseurl")
+    assert response.status_code == 400
+
+    # Test indicating a real file from URL
+    response = client.get("/?doc_url=https://arxiv.org/ftp/arxiv/papers/2201/2201.05599.pdf")
+    assert response.status_code == 201
+
 def test_get_document_metadata(client):
     """Test the /document/metadata/<id> route"""
     # We insert a first document in the database (in case the db is empty)
