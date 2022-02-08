@@ -104,9 +104,14 @@ class Api:
                         file.write(response.read())
                         file.close()
                 # Except, error in the given URL
-                except ValueError:
+                except ValueError as err:
                     return Response(
-                        json.dumps(MessageEntity("Incorrect URL: unknown URL type"), cls=MessageEncoder),
+                        json.dumps(MessageEntity("Incorrect URL: {0}".format(err)), cls=MessageEncoder),
+                        mimetype="application/json;charset=utf-8",
+                    ), 400
+                except urllib.error.URLError as err:
+                    return Response(
+                        json.dumps(MessageEntity("Incorrect URL: {0}".format(err)), cls=MessageEncoder),
                         mimetype="application/json;charset=utf-8",
                     ), 400
 

@@ -58,6 +58,12 @@ The file may look like:
     export FLASK_ENV=development
     flask run
 
+# Usage
+
+    curl http://localhost:5000/?doc_url=https://arxiv.org/ftp/arxiv/papers/2201/2201.05599.pdf
+    curl http://localhost:5000/?doc_url=file:///home/myuser/arxiv_intelligence_ner_ws/tests/article.pdf
+    curl -F 'file=@article.pdf' localhost:5000
+
 # Test
 
 ## pylint
