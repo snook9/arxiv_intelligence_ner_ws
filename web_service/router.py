@@ -19,7 +19,8 @@ def post_document():
     Returns:
         flask.Response: standard flask HTTP response.
     """
-    return Api.post_document(request)
+    doc_url = request.args.get('doc_url')
+    return Api.post_document(request, doc_url)
 
 @swag_from("swagger/document_metadata.yml", methods=["GET"])
 @bp.route("/document/metadata/<int:doc_id>", methods=["GET"])

@@ -16,11 +16,6 @@ class OntologyService():
         #self._foaf = get_namespace("http://xmlns.com/foaf/0.1/")
         self._foaf = get_ontology("http://xmlns.com/foaf/spec/index.rdf").load()
 
-        # TODO TEMP CODE à supprimer
-        #print(self._onto["Author"])
-        print(self._foaf["Person"])
-        print(self._foaf["Document"])
-
     def build_ontology(self: object, named_entity: NamedEntity):
         if named_entity.type == NamedEntityTypeEnum.PERSON:
             with self._onto:
