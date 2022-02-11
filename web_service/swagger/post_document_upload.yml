@@ -1,8 +1,10 @@
 openapi: 3.0.3
 tags:
   - name: Upload a PDF document
-get:
-  description: Display the index page
+summary: "To upload a PDF document"
+description: "To upload a PDF document"
+produces:
+- "application/json"
 post:
   description: To upload a PDF document
 responses:

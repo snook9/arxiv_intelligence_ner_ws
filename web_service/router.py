@@ -10,7 +10,8 @@ from web_service.services import Api
 
 bp = Blueprint("router", __name__, template_folder="templates")
 
-@swag_from("swagger/document_upload.yml", methods=["GET", "POST"])
+@swag_from("swagger/get_document_upload.yml", methods=["GET"])
+@swag_from("swagger/post_document_upload.yml", methods=["POST"])
 @bp.route("/", methods=["GET", "POST"])
 @bp.route("/document/upload", methods=["GET", "POST"])
 def post_document():
