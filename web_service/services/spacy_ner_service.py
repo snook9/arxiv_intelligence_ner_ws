@@ -6,7 +6,6 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import spacy
 from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum, NamedEntityScoreEnum
-from .ontology_service import OntologyService
 from .ner_interface import NerInterface
 
 class SpacyNerService(NerInterface):
@@ -46,8 +45,6 @@ class SpacyNerService(NerInterface):
 
         named_entities = []
 
-        ontology_service = OntologyService()
-
         for ent in doc.ents:
             named_entity = NamedEntity()
             named_entity.text = ent.text
@@ -57,9 +54,5 @@ class SpacyNerService(NerInterface):
             named_entity.score = NamedEntityScoreEnum.LOW
 
             named_entities.append(named_entity)
-
-            ontology_service.build_ontology(named_entity)
-
-        ontology_service.save("tmp/temp.owl")
 
         return named_entities
