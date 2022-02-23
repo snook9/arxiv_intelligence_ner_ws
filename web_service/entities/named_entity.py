@@ -39,6 +39,13 @@ class NamedEntityTypeEnum(Enum):
     # Entities that don't fit into any of the other entity categories
     OTHER = "OTHER"
 
+class NamedEntityRelationshipEnum(Enum):
+    """Enum for the relationship a named entity"""
+    # The named entity is quoted in a document
+    QUOTED = "QUOTED"
+    # The named entity is referenced in a document
+    REFERENCED = "REFERENCED"
+
 class NamedEntity:
     """Named entity class"""
     text: str
@@ -48,6 +55,7 @@ class NamedEntity:
     type: NamedEntityTypeEnum
     begin_offset: int
     end_offset: int
+    relationship: NamedEntityRelationshipEnum
 
 class NamedEntityEncoder(json.JSONEncoder):
     """Class for converting full object to JSON string"""
@@ -59,6 +67,7 @@ class NamedEntityEncoder(json.JSONEncoder):
                 "text": o.text,
                 "begin_offset": o.begin_offset,
                 "end_offset": o.end_offset,
+                "relationship": o.relationship.name
                 }
 
             try:

@@ -8,6 +8,7 @@ import textwrap
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
 from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum, NamedEntityScoreEnum
+from web_service.entities.named_entity import NamedEntityRelationshipEnum
 from .ner_interface import NerInterface
 
 class AwsComprehendNerService(NerInterface):
@@ -43,7 +44,9 @@ class AwsComprehendNerService(NerInterface):
             type_enum = NamedEntityTypeEnum.OTHER
         return type_enum
 
-    def extract(self, text: str):
+    def extract(self: object, text: str,
+                relationship: NamedEntityRelationshipEnum = NamedEntityRelationshipEnum.QUOTED,
+                offset: int = 0):
         # We split the text for each 'max_char_per_request' caracters
         lines = textwrap.wrap(text, self.max_char_per_request, break_long_words=False)
 
@@ -51,7 +54,7 @@ class AwsComprehendNerService(NerInterface):
         comprehend = boto3.client(service_name='comprehend', region_name=self.aws_region)
 
         named_entities = []
-        offset = 0
+        lines_offset = 0 + offset
         for line in lines:
             try:
                 # We launch an AWS request
@@ -61,10 +64,11 @@ class AwsComprehendNerService(NerInterface):
                     named_entity = NamedEntity()
                     named_entity.text = entity["Text"]
                     named_entity.type = self._convert_type_to_type_enum(entity["Type"])
-                    named_entity.begin_offset = entity["BeginOffset"] + offset
-                    named_entity.end_offset = entity["EndOffset"] + offset
+                    named_entity.begin_offset = entity["BeginOffset"] + lines_offset
+                    named_entity.end_offset = entity["EndOffset"] + lines_offset
                     named_entity.aws_score = entity["Score"]
                     named_entity.score = NamedEntityScoreEnum.LOW
+                    named_entity.relationship = relationship
                     named_entities.append(named_entity)
             except NoCredentialsError:
                 print("Unable to locate AWS credentials")
@@ -72,7 +76,7 @@ class AwsComprehendNerService(NerInterface):
                 print("An error occurred (UnrecognizedClientException) \
                 when calling the DetectEntities operation: \
                 The security AWS token included in the request is invalid")
-            offset += len(line)
+            lines_offset += len(line)
 
         # We must sort the list by begin_offset
         named_entities.sort(key=lambda named_entity: named_entity.begin_offset)

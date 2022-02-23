@@ -6,6 +6,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import spacy
 from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum, NamedEntityScoreEnum
+from web_service.entities.named_entity import NamedEntityRelationshipEnum
 from .ner_interface import NerInterface
 
 class SpacyNerService(NerInterface):
@@ -39,7 +40,9 @@ class SpacyNerService(NerInterface):
             type_enum = NamedEntityTypeEnum.OTHER
         return type_enum
 
-    def extract(self: object, text: str):
+    def extract(self: object, text: str,
+                relationship: NamedEntityRelationshipEnum = NamedEntityRelationshipEnum.QUOTED,
+                offset: int = 0):
         nlp = spacy.load("en_core_web_sm")
         doc = nlp(text)
 
@@ -49,9 +52,10 @@ class SpacyNerService(NerInterface):
             named_entity = NamedEntity()
             named_entity.text = ent.text
             named_entity.type = self._convert_label_to_type_enum(ent.label_)
-            named_entity.begin_offset = ent.start_char
-            named_entity.end_offset = ent.end_char
+            named_entity.begin_offset = ent.start_char + offset
+            named_entity.end_offset = ent.end_char + offset
             named_entity.score = NamedEntityScoreEnum.LOW
+            named_entity.relationship = relationship
 
             named_entities.append(named_entity)
 

@@ -14,7 +14,7 @@ from web_service.common.base import Base, session_factory
 from web_service.common.config import Config
 from web_service.services.spacy_ner_service import SpacyNerService
 from web_service.services.aws_comprehend_ner_service import AwsComprehendNerService
-from .named_entity import NamedEntityScoreEnum, NamedEntityEncoder
+from .named_entity import NamedEntityRelationshipEnum, NamedEntityScoreEnum, NamedEntityEncoder
 
 class DocumentEntity(Base):
     """Class for representing a generic document entity and his Data Access Object
@@ -282,14 +282,26 @@ class DocumentEntity(Base):
         if "spacy" in ner_methods:
             ner_services.append(SpacyNerService())
 
-        named_entities = []
+        # Now, we must split the text in two parts (before and after "References" key word)
+        references_word = "References"
+        splited_text = text.rsplit(references_word, 1)
 
+        named_entities = []
         # For each NER service
         for ner_service in ner_services:
             # We get the named entities list
-            temp_named_entities_list = ner_service.extract(text)
+            named_entities_quoted = ner_service.extract(splited_text[0], NamedEntityRelationshipEnum.QUOTED)
+            # Because the 2nd part of the text (i.e. splited_text[1]), start from 0,
+            # The NER object will locate the named entities from 0, so we have to set an offset,
+            # To take account of the first splited text (before references key word)
+            try:
+                named_entities_referenced = ner_service.extract(splited_text[1], NamedEntityRelationshipEnum.REFERENCED, len(splited_text[0]) + len(references_word))
+            except IndexError:
+                # If except, the "References" key word has not been found
+                # So, we empty the named_entities_referenced list
+                named_entities_referenced = []
             # We merge the named entities list with the previous list
-            named_entities = self._merge(named_entities, temp_named_entities_list)
+            named_entities = self._merge(named_entities, named_entities_quoted+named_entities_referenced)
 
         return named_entities
 
