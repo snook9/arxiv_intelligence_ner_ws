@@ -1,0 +1,22 @@
+openapi: 3.0.3
+tags:
+  - name: Display the home page
+summary: "Display the home page"
+description: "Display the home page"
+produces:
+- "application/json"
+get:
+  description: Display the home page
+parameters:
+  - name: doc_url
+    in: path
+    description: URL of the document to send
+    type: path
+    required: false
+responses:
+    '200':
+          description: Successful response
+    '400':
+          description: Bad Request
+    '500':
+          description: Internal Server Error

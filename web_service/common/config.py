@@ -11,7 +11,7 @@ from pathlib import Path
 class Config:
     """Class for accessing config.ini file"""
 
-    def __init__(self: object, ):
+    def __init__(self: object):
         """Initialize the object"""
         config = configparser.ConfigParser()
         # We load the global config file
@@ -56,13 +56,13 @@ class Config:
         return self.allowed_extensions
 
     def get_ner_methods(self):
-        """Returns allowed_extensions"""
+        """Returns ner_methods"""
         return self.ner_methods
 
     def get_aws_region(self):
-        """Returns allowed_extensions"""
+        """Returns aws_region"""
         return self.aws_region
 
     def get_max_char_per_aws_request(self):
-        """Returns allowed_extensions"""
+        """Returns max_char_per_aws_request"""
         return self.max_char_per_aws_request

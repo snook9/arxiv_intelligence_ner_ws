@@ -58,13 +58,19 @@ The file may look like:
     export FLASK_ENV=development
     flask run
 
+# Usage
+
+    curl http://localhost:5000/?doc_url=https://arxiv.org/ftp/arxiv/papers/2201/2201.05599.pdf
+    curl http://localhost:5000/?doc_url=file:///home/myuser/arxiv_intelligence_ner_ws/tests/article.pdf
+    curl -F 'file=@article.pdf' localhost:5000
+
 # Test
 
 ## pylint
 
     apt install pylint
     export PYTHONPATH="venv/lib/python3.9/site-packages/"
-    pylint --disable too-many-instance-attributes --disable too-few-public-methods --disable too-many-locals --disable too-many-arguments --disable c-extension-no-member web_service/*
+    pylint --disable too-many-return-statements --disable too-many-instance-attributes --disable too-few-public-methods --disable too-many-locals --disable too-many-arguments --disable c-extension-no-member web_service/*
 
 ## pytest
 

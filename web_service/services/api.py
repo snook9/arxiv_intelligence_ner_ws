@@ -5,6 +5,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 """
 
 import json
+import urllib.request
 from json import JSONDecodeError
 from pathlib import Path
 from flask import Response, render_template, current_app
@@ -34,77 +35,113 @@ class Api:
         )
 
     @staticmethod
-    def post_document(request):
+    def post_document(request, doc_url):
         """Index of the API.
-        GET method returns a wellcome message.
+        GET method returns a welcome message or retreive the doc_url parameter.
         POST method can be used to upload a PDF file.
             See README.md for response format.
 
         Returns:
             flask.Response: standard flask HTTP response.
         """
-        # If it's a POST request (the client try to send a file)
-        if request.method == "POST":
-            # check if the post request has the file part
-            if "file" not in request.files:
-                return Response(
-                    json.dumps(MessageEntity("No file part"), cls=MessageEncoder),
-                    mimetype="application/json;charset=utf-8",
-                ), 400
+        # If it's a POST method OR
+        # it's a GET method and no doc_url are given OR
+        if request.method == "POST" or \
+           (request.method == "GET" and doc_url is not None):
 
-            # Else, we get the file
-            file = request.files["file"]
+            # If it's a POST request (the client try to send a file)
+            if request.method == "POST":
+                # check if the post request has the file part
+                if "file" not in request.files:
+                    return Response(
+                        json.dumps(MessageEntity("No file part"), cls=MessageEncoder),
+                        mimetype="application/json;charset=utf-8",
+                    ), 400
 
-            # if user does not select file, browser also
-            # submit an empty part without filename
-            if file.filename == "":
-                return Response(
-                    json.dumps(MessageEntity("No selected file"), cls=MessageEncoder),
-                    mimetype="application/json;charset=utf-8",
-                ), 400
+                # Else, we get the file
+                file = request.files["file"]
 
-            # If the file's type is allowed
-            if file and Api.allowed_file(file.filename):
-                # Check user input
-                filename = secure_filename(file.filename)
-                filepath = Path().joinpath(
-                    current_app.project_config.get_upload_temp_folder(),
-                    filename
-                    )
-                # Save the file in an upload folder
-                file.save(filepath)
-                # Extract and persist the file in the database
-                doc_id = PdfEntity(current_app.project_config).start_ner(filepath)
-                # If failed
-                if None is doc_id:
-                    # Returns the appropriate error
+                # if user does not select file, browser also
+                # submit an empty part without filename
+                if file.filename == "":
+                    return Response(
+                        json.dumps(MessageEntity("No selected file"), cls=MessageEncoder),
+                        mimetype="application/json;charset=utf-8",
+                    ), 400
+
+                # If the file's type is not allowed
+                if Api.allowed_file(file.filename) is False:
                     return Response(
                         json.dumps(
-                            MessageEntity("This file's type is not allowed!"),
-                            cls=MessageEncoder,
+                            MessageEntity("This file's type is not allowed!"), cls=MessageEncoder
                         ),
                         mimetype="application/json;charset=utf-8",
                     ), 400
-                # Else, returning the ID of the object in the database
+
+                # All it's OK, so we save the file in an upload folder
+                filepath = Path().joinpath(
+                    current_app.project_config.get_upload_temp_folder(),
+                    # Check user input
+                    secure_filename(file.filename)
+                    )
+                file.save(filepath)
+
+            # Else, it's a GET method and no doc_url are given
+            elif request.method == "GET" and doc_url is not None:
+                try:
+                    # We open the URL
+                    with urllib.request.urlopen(doc_url) as response:
+                        # We split the URL to get the filename
+                        filename = doc_url.rsplit('/', 1).pop()
+                        # All seems OK, so we save the file in an upload folder
+                        filepath = Path().joinpath(
+                            current_app.project_config.get_upload_temp_folder(),
+                            # Check user input
+                            secure_filename(filename)
+                        )
+                        # Save the file in an upload folder
+                        with open(filepath, "wb") as file:
+                            file.write(response.read())
+                            file.close()
+                # Except, error in the given URL
+                except ValueError as err:
+                    return Response(
+                        json.dumps(MessageEntity(f"Incorrect URL: {err}"), cls=MessageEncoder),
+                        mimetype="application/json;charset=utf-8",
+                    ), 400
+                except urllib.error.URLError as err:
+                    return Response(
+                        json.dumps(MessageEntity(f"Incorrect URL: {err}"), cls=MessageEncoder),
+                        mimetype="application/json;charset=utf-8",
+                    ), 400
+
+            # Here, we have the uploaded file saved in a folder
+            # The full file path is filepath
+            # Extract and persist the file in the database
+            doc_id = PdfEntity(current_app.project_config).start_ner(filepath)
+            # If failed
+            if None is doc_id:
+                # Returns the appropriate error
                 return Response(
                     json.dumps(
-                        MessageEntity(
-                            "The file '" + filename + "' has been sent successfully!",
-                            doc_id,
-                        ),
+                        MessageEntity("This file's type is not allowed!"),
                         cls=MessageEncoder,
                     ),
                     mimetype="application/json;charset=utf-8",
-                ), 201
-
-            # Else, the file's type is not allowed
+                ), 400
+            # Else, returning the ID of the object in the database
             return Response(
                 json.dumps(
-                    MessageEntity("This file's type is not allowed!"), cls=MessageEncoder
+                    MessageEntity(
+                        "The file '" + filepath.name + "' has been received successfully!",
+                        doc_id,
+                    ),
+                    cls=MessageEncoder,
                 ),
                 mimetype="application/json;charset=utf-8",
-            ), 400
+            ), 201
 
+        # Else, it's a basic GET method
         # Generate an index HTML page with an outstanding look & feel
         return render_template("index.html", title="NER Web Service")
 
