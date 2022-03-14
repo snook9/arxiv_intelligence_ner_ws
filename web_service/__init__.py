@@ -114,7 +114,8 @@ swagger_template = {
                 "id": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "ID of the uploaded PDF file, otherwise 'null' if not found, Important: when the id is null, the response is a Message json object"
+                    "description": "ID of the uploaded PDF file, otherwise 'null' if not found, \
+                    Important: when the id is null, the response is a Message json object"
                 },
                 "status": {
                     "type": "string",
@@ -171,12 +172,14 @@ swagger_template = {
                             "begin_offset": {
                                 "type": "integer",
                                 "format": "int32",
-                                "description": "start index of the entity in the full document content"
+                                "description": "start index of the entity \
+                                in the full document content"
                             },
                             "end_offset": {
                                 "type": "integer",
                                 "format": "int32",
-                                "description": "end index of the entity in the full document content"
+                                "description": "end index of the entity \
+                                 in the full document content"
                             },
                             "relationship": {
                                 "type": "string",
