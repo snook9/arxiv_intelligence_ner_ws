@@ -85,10 +85,12 @@ swagger_template = {
             "properties": {
                 "id": {
                     "type": "integer",
-                    "format": "int32"
+                    "format": "int32",
+                    "description": "ID of the uploaded PDF file, otherwise 'null' if error"
                 },
                 "message": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Explicit human readable status message"
                 }
             }
         },
@@ -97,10 +99,12 @@ swagger_template = {
             "properties": {
                 "id": {
                     "type": "integer",
-                    "format": "int32"
+                    "format": "int32",
+                    "description": "ID of the uploaded PDF file, otherwise 'null' if error"
                 },
                 "content": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Content of the PDF document"
                 }
             }
         },
@@ -109,11 +113,11 @@ swagger_template = {
             "properties": {
                 "id": {
                     "type": "integer",
-                    "format": "int32"
+                    "format": "int32",
+                    "description": "ID of the uploaded PDF file, otherwise 'null' if not found, Important: when the id is null, the response is a Message json object"
                 },
                 "status": {
                     "type": "string",
-                    "example": "SUCCESS",
                     "description": "Status of the document processing",
                     "enum": [
                         "SUCCESS",
@@ -123,29 +127,37 @@ swagger_template = {
                 },
                 "uploaded_date": {
                     "type": "string",
-                    "example": "2022-03-14-09-48-51.679768"
+                    "format": "2022-03-14-09-48-51.679768",
+                    "description": "Date and time when the file was uploaded"
                 },
                 "author": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Author specified in the PDF file as meta data"
                 },
                 "creator": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Creator specified in the PDF file as meta data"
                 },
                 "producer": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Producer specified in the PDF file as meta data"
                 },
                 "subject": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Subject specified in the PDF file as meta data "
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Title specified in the PDF file as meta data"
                 },
                 "number_of_pages": {
                     "type": "integer",
-                    "format": "int32"
+                    "format": "int32",
+                    "description": "Nomber of pages in the PDF file"
                 },
                 "raw_info": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Additional information in the PDF file as meta data"
                 },
                 "named_entities": {
                     "type": "array",
@@ -153,19 +165,21 @@ swagger_template = {
                         "type": "object",
                         "properties": {
                             "text": {
-                                "type": "string"
+                                "type": "string",
+                                "description": "text of the named entity"
                             },
                             "begin_offset": {
                                 "type": "integer",
-                                "format": "int32"
+                                "format": "int32",
+                                "description": "start index of the entity in the full document content"
                             },
                             "end_offset": {
                                 "type": "integer",
-                                "format": "int32"
+                                "format": "int32",
+                                "description": "end index of the entity in the full document content"
                             },
                             "relationship": {
                                 "type": "string",
-                                "example": "QUOTED",
                                 "description": "Relation between the document and the named entity",
                                 "enum": [
                                     "QUOTED",
@@ -174,7 +188,6 @@ swagger_template = {
                             },
                             "score": {
                                 "type": "string",
-                                "example": "LOW",
                                 "description": "Entity reliability score",
                                 "enum": [
                                     "LOW",
@@ -184,7 +197,6 @@ swagger_template = {
                             },
                             "type": {
                                 "type": "string",
-                                "example": "PERSON",
                                 "description": "Type of the named entity",
                                 "enum": [
                                     "PRODUCT",

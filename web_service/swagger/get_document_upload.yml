@@ -2,7 +2,7 @@ openapi: 3.0.3
 tags:
   - "Display the home page"
 summary: "To show the home page"
-description: "This route shows the home page"
+description: "This route shows the home page. Also, this route can be used to send a document via URL. In this case, the route returns an ID that can be used to retrieve document metadata."
 produces:
 - "application/json"
 get:

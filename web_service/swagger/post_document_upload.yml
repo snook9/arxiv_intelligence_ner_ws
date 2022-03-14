@@ -2,11 +2,19 @@ openapi: 3.0.3
 tags:
   - "Upload a PDF document"
 summary: "To upload a PDF document"
-description: "This route allows to upload a PDF document"
+description: "This route allows to upload a PDF document. It returns an ID which can be used to retrieve the metadata of the document."
+consumes:
+- multipart/form-data
 produces:
 - "application/json"
 post:
   description: "To upload a PDF document"
+parameters:
+  - name: file
+    in: formData
+    description: "File to upload"
+    type: file
+    required: true
 responses:
     '200':
           description: "Successful response"

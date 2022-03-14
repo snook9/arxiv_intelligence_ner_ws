@@ -1,6 +1,8 @@
 openapi: 3.0.3
 tags:
   - "Content of a document"
+summary: "To get the content of an uploaded PDF document"
+description: "This route allows to get the content of an uploaded PDF document. Replace the {id} parameter by the target ID of the document. This ID was returned in response of an upload file request"
 get:
   description: "None"
 parameters:
