@@ -1,22 +1,36 @@
 openapi: 3.0.3
 tags:
-  - name: Display the home page
-summary: "Display the home page"
-description: "Display the home page"
+  - "Display the home page"
+summary: "To show the home page"
+description: "This route shows the home page"
 produces:
 - "application/json"
 get:
-  description: Display the home page
+  description: "Display the home page"
 parameters:
   - name: doc_url
-    in: path
-    description: URL of the document to send
-    type: path
+    in: query
+    description: "URL of the document to send"
+    type: string
     required: false
+    pattern: '^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$'
+    maxLength: 1024
 responses:
     '200':
-          description: Successful response
+          description: "Successful response"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Message"
     '400':
-          description: Bad Request
+          description: "Bad Request"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Message"
     '500':
-          description: Internal Server Error
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Message"

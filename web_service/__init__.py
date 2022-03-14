@@ -57,18 +57,92 @@ def create_app(test_config=None):
 
     return app
 
-swagger_template = dict(
-    info = {
-        "title": LazyString(
-            lambda: "Swagger UI document of the arXiv Intelligence NER Web Service"
-            ),
-        "version": LazyString(lambda: "0.1"),
-        "description": LazyString(
-            lambda: "This document describes the web service interface specification."
-            ),
+swagger_template = {
+    "swagger": "2.0",
+    "info": {
+        "title": "Swagger UI document of the arXiv Intelligence NER Web Service",
+        "version": "1.0",
+        "description": "This document describes the web service interface specification."
     },
-    host = LazyString(lambda: request.host)
-)
+    "host": LazyString(lambda: request.host),  # overrides localhost:500
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "securityDefinitions": {
+        "wsstore_auth": {
+            "type": "basic"
+        }
+    },
+    "security": [
+        {
+            "wsstore_auth": ["read", "write"]
+        }
+    ],
+    "definitions": {
+        "Message": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "Content": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "content": {
+                    "type": "string"
+                }
+            }
+        },
+        "Metadata": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "SUCCESS"
+                },
+                "uploaded_date": {
+                    "type": "string",
+                    "example": "2022-03-14-09-48-51.679768"
+                },
+                "author": {
+                    "type": "string"
+                },
+                "creator": {
+                    "type": "string"
+                },
+                "producer": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "number_of_pages": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        }
+    }
+}
+
 swagger_config = {
     "headers": [],
     "specs": [

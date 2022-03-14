@@ -1,19 +1,33 @@
 openapi: 3.0.3
 tags:
-  - name: Metadata and Named Entities of a document 
+  - "Metadata and Named Entities of a document"
 get:
-  description: None
+  description: "None"
 parameters:
   - name: doc_id
     in: path
-    description: Identifier of the document
+    description: "Identifier of the document"
     type: integer
     required: true
-    default: 1
+    minimum: 0
+    maximum: 1000000
+    format: int32
 responses:
     '200':
-          description: Successful response
+          description: "Successful response"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Metadata"
     '400':
-          description: Bad Request
+          description: "Bad Request"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Message"
     '500':
-          description: Internal Server Error
+          description: "Internal Server Error"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Message"
