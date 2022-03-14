@@ -113,7 +113,13 @@ swagger_template = {
                 },
                 "status": {
                     "type": "string",
-                    "example": "SUCCESS"
+                    "example": "SUCCESS",
+                    "description": "Status of the document processing",
+                    "enum": [
+                        "SUCCESS",
+                        "PENDING",
+                        "ERROR"
+                    ]
                 },
                 "uploaded_date": {
                     "type": "string",
@@ -137,6 +143,63 @@ swagger_template = {
                 "number_of_pages": {
                     "type": "integer",
                     "format": "int32"
+                },
+                "raw_info": {
+                    "type": "string"
+                },
+                "named_entities": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string"
+                            },
+                            "begin_offset": {
+                                "type": "integer",
+                                "format": "int32"
+                            },
+                            "end_offset": {
+                                "type": "integer",
+                                "format": "int32"
+                            },
+                            "relationship": {
+                                "type": "string",
+                                "example": "QUOTED",
+                                "description": "Relation between the document and the named entity",
+                                "enum": [
+                                    "QUOTED",
+                                    "REFERENCED"
+                                ]
+                            },
+                            "score": {
+                                "type": "string",
+                                "example": "LOW",
+                                "description": "Entity reliability score",
+                                "enum": [
+                                    "LOW",
+                                    "MEDIUM",
+                                    "HIGH"
+                                ]
+                            },
+                            "type": {
+                                "type": "string",
+                                "example": "PERSON",
+                                "description": "Type of the named entity",
+                                "enum": [
+                                    "PRODUCT",
+                                    "DATE",
+                                    "EVENT",
+                                    "LOCATION",
+                                    "ORGANIZATION",
+                                    "PERSON",
+                                    "QUANTITY",
+                                    "TITLE",
+                                    "OTHER"
+                                ]
+                            }
+                        }
+                    }
                 }
             }
         }
