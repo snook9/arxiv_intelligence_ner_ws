@@ -4,8 +4,8 @@ Authors: Jonathan CASSAING
 Web service specialized in Named Entity Recognition (NER), in Natural Language Processing (NLP)
 """
 
-from web_service import create_app
 from waitress import serve
+from web_service import create_app
 
 app = create_app()
 
