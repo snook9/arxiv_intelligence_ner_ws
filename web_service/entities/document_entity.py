@@ -186,6 +186,7 @@ class DocumentEntity(Base):
     def update(
             self,
             object_id: int,
+            status: str = "SUCCESS",
             uploaded_date: str = None,
             author: str = None,
             creator: str = None,
@@ -200,7 +201,7 @@ class DocumentEntity(Base):
 
         session = session_factory()
         pdf_entity = session.query(DocumentEntity).get(object_id)
-        pdf_entity.status = "SUCCESS"
+        pdf_entity.status = status
         if uploaded_date is not None:
             pdf_entity.uploaded_date = str(uploaded_date)
         if author is not None:
@@ -248,15 +249,41 @@ class DocumentEntity(Base):
                 "Error: the file", filename.absolute, "does not appear to exist",
                 file=sys.stderr
                 )
+            # Set the ERROR in database
+            self.update(
+                object_id,
+                "ERROR",
+                datetime.today().strftime("%Y-%m-%d-%H-%M-%S.%f")
+            )
+            return self.internal_id
 
-        # We extract the named entities
-        named_entities = self.extract_named_entities(document.content)
-        # We convert named entities to json
-        json_named_entities = json.dumps(named_entities, cls=NamedEntityEncoder)
+        try:
+            # We extract the named entities
+            named_entities = self.extract_named_entities(document.content)
+            # We convert named entities to json
+            json_named_entities = json.dumps(named_entities, cls=NamedEntityEncoder)
+        except ValueError as err:
+            print("Error when extracting named entities:", err)
+            # Set the ERROR in database
+            self.update(
+                object_id,
+                "ERROR",
+                datetime.today().strftime("%Y-%m-%d-%H-%M-%S.%f"),
+                document.author,
+                document.creator,
+                document.producer,
+                document.subject,
+                document.title,
+                document.number_of_pages,
+                document.raw_info,
+                document.content
+            )
+            return self.internal_id
 
         # Saving content to the database
         self.update(
             object_id,
+            "SUCCESS",
             datetime.today().strftime("%Y-%m-%d-%H-%M-%S.%f"),
             document.author,
             document.creator,

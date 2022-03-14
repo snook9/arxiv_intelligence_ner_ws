@@ -4,6 +4,10 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 # Install
 
+## With Docker
+
+    sudo docker build -t arxiv_intelligence_web_service .
+
 ## With Linux or Mac OS
 
 ### Dependencies: pdftotext
@@ -24,13 +28,29 @@ These instructions assume you're using Python 3 on a recent OS. Package names ma
 
 ### Web Service
 
-Create a virtualenv and activate it:
+#### Virtual environment
 
     python3 -m venv venv
-    python3 -m spacy download en_core_web_sm
     . venv/bin/activate
 
-Install arXiv Intelligence NER Web Service:
+#### Spacy
+
+    pip install --upgrade pip
+    pip install -U pip setuptools wheel
+
+With CPU:
+
+    pip install -U spacy
+
+If you prefer to use a GPU:
+
+    pip install -U 'spacy[cuda114]'
+
+Model:
+
+    python3 -m spacy download en_core_web_sm
+
+#### Web Service requirements:
 
     pip install -r requirements.txt
 
@@ -40,7 +60,14 @@ Sorry, this app is not currently compatible with Windows... Please use Docker in
 
 ## Credentials for AWS Comprehend setup
 
-Connect to your AWS account (or AWS academy account).
+The current web service can use the AWS Comprehend.
+If you would enable the AWS Comprehend, go in the 'config/config.ini' file 
+and add the 'aws-comprehend' method to the parameter 'ner_methods'.
+Example for AWS Comprehend + Spacy:
+
+    ner_methods = aws-comprehend spacy
+
+You will also need to connect to your AWS account (or AWS academy account).
 For academy users, be sure to start the Lab.
 Copy and past the content of the Cloud Access AWS CLI into ~/.aws/credentials
 The file may look like:
@@ -52,7 +79,17 @@ The file may look like:
 
 # Run
 
+## With Docker
+
+    sudo docker run -d -p 5000:5000 arxiv_intelligence_web_service
+
 ## With Linux or Mac OS
+
+### Production
+
+    python3 main.py
+
+### Development
 
     export FLASK_APP=web_service
     export FLASK_ENV=development
@@ -60,9 +97,25 @@ The file may look like:
 
 # Usage
 
+## Swagger
+
+## curl
+
+Ask the web service to process a PDF file from an URL:
+
     curl http://localhost:5000/?doc_url=https://arxiv.org/ftp/arxiv/papers/2201/2201.05599.pdf
-    curl http://localhost:5000/?doc_url=file:///home/myuser/arxiv_intelligence_ner_ws/tests/article.pdf
+
+Upload a PDF local file:
+
     curl -F 'file=@article.pdf' localhost:5000
+
+Get PDF metadata:
+
+    curl http://localhost:5000/document/metadata/1
+
+Get PDF content:
+
+    curl http://localhost:5000/document/content/1
 
 # Test
 
