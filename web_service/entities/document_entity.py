@@ -317,18 +317,25 @@ class DocumentEntity(Base):
         # For each NER service
         for ner_service in ner_services:
             # We get the named entities list
-            named_entities_quoted = ner_service.extract(splited_text[0], NamedEntityRelationshipEnum.QUOTED)
+            named_entities_quoted = ner_service.extract(
+                splited_text[0], NamedEntityRelationshipEnum.QUOTED
+                )
             # Because the 2nd part of the text (i.e. splited_text[1]), start from 0,
             # The NER object will locate the named entities from 0, so we have to set an offset,
             # To take account of the first splited text (before references key word)
             try:
-                named_entities_referenced = ner_service.extract(splited_text[1], NamedEntityRelationshipEnum.REFERENCED, len(splited_text[0]) + len(references_word))
+                named_entities_referenced = ner_service.extract(
+                    splited_text[1], NamedEntityRelationshipEnum.REFERENCED,
+                    len(splited_text[0]) + len(references_word)
+                    )
             except IndexError:
                 # If except, the "References" key word has not been found
                 # So, we empty the named_entities_referenced list
                 named_entities_referenced = []
             # We merge the named entities list with the previous list
-            named_entities = self._merge(named_entities, named_entities_quoted+named_entities_referenced)
+            named_entities = self._merge(
+                named_entities, named_entities_quoted+named_entities_referenced
+                )
 
         return named_entities
 
