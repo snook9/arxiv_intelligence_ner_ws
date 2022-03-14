@@ -4,6 +4,10 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 # Install
 
+## With Docker
+
+    sudo docker build -t arxiv_intelligence_web_service:0.9.0 .
+
 ## With Linux or Mac OS
 
 ### Dependencies: pdftotext
@@ -24,13 +28,29 @@ These instructions assume you're using Python 3 on a recent OS. Package names ma
 
 ### Web Service
 
-Create a virtualenv and activate it:
+#### Virtual environment
 
     python3 -m venv venv
-    python3 -m spacy download en_core_web_sm
     . venv/bin/activate
 
-Install arXiv Intelligence NER Web Service:
+#### Spacy
+
+    pip install --upgrade pip
+    pip install -U pip setuptools wheel
+
+With CPU:
+
+    pip install -U spacy
+
+If you prefer to use a GPU:
+
+    pip install -U 'spacy[cuda114]'
+
+Model:
+
+    python3 -m spacy download en_core_web_sm
+
+#### Web Service requirements:
 
     pip install -r requirements.txt
 
