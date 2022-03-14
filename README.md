@@ -6,7 +6,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 ## With Docker
 
-    sudo docker build -t arxiv_intelligence_web_service:0.9.0 .
+    sudo docker build -t arxiv_intelligence_web_service .
 
 ## With Linux or Mac OS
 
@@ -60,7 +60,14 @@ Sorry, this app is not currently compatible with Windows... Please use Docker in
 
 ## Credentials for AWS Comprehend setup
 
-Connect to your AWS account (or AWS academy account).
+The current web service can use the AWS Comprehend.
+If you would enable the AWS Comprehend, go in the 'config/config.ini' file 
+and add the 'aws-comprehend' method to the parameter 'ner_methods'.
+Example for AWS Comprehend + Spacy:
+
+    ner_methods = aws-comprehend spacy
+
+You will also need to connect to your AWS account (or AWS academy account).
 For academy users, be sure to start the Lab.
 Copy and past the content of the Cloud Access AWS CLI into ~/.aws/credentials
 The file may look like:
@@ -71,6 +78,10 @@ The file may look like:
     aws_session_token=BLABLABLA
 
 # Run
+
+## With Docker
+
+    sudo docker run -d -p 5000:5000 arxiv_intelligence_web_service
 
 ## With Linux or Mac OS
 
