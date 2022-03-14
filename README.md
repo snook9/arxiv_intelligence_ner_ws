@@ -85,15 +85,37 @@ The file may look like:
 
 ## With Linux or Mac OS
 
+### Production
+
+    python3 main.py
+
+### Development
+
     export FLASK_APP=web_service
     export FLASK_ENV=development
     flask run
 
 # Usage
 
+## Swagger
+
+## curl
+
+Ask the web service to process a PDF file from an URL:
+
     curl http://localhost:5000/?doc_url=https://arxiv.org/ftp/arxiv/papers/2201/2201.05599.pdf
-    curl http://localhost:5000/?doc_url=file:///home/myuser/arxiv_intelligence_ner_ws/tests/article.pdf
+
+Upload a PDF local file:
+
     curl -F 'file=@article.pdf' localhost:5000
+
+Get PDF metadata:
+
+    curl http://localhost:5000/document/metadata/1
+
+Get PDF content:
+
+    curl http://localhost:5000/document/content/1
 
 # Test
 
