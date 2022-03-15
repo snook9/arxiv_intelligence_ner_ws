@@ -97,7 +97,9 @@ The file may look like:
 
 # Usage
 
-## Swagger
+## Swagger
+
+http://localhost:5000/apidocs/
 
 ## curl
 
