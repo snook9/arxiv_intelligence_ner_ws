@@ -16,7 +16,7 @@ parameters:
     type: file
     required: true
 responses:
-    '200':
+    '201':
           description: "Successful response"
           schema:
             type: "array"
