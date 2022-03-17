@@ -49,6 +49,11 @@ class SpacyNerService(NerInterface):
         named_entities = []
 
         for ent in doc.ents:
+            # We do not keep entities that exceed 60 characters
+            # or that do not contain at least 2 characters.
+            if len(ent.text) > 60 or len(ent.text) < 2:
+                continue
+
             named_entity = NamedEntity()
             named_entity.text = ent.text
             named_entity.type = self._convert_label_to_type_enum(ent.label_)
