@@ -198,6 +198,10 @@ swagger_template = {
                                     "HIGH"
                                 ]
                             },
+                            "aws_score": {
+                                "type": "float",
+                                "description": "Entity reliability score from AWS Comprehend, if exist"
+                            },
                             "type": {
                                 "type": "string",
                                 "description": "Type of the named entity",
