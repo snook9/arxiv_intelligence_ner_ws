@@ -200,7 +200,8 @@ swagger_template = {
                             },
                             "aws_score": {
                                 "type": "float",
-                                "description": "Entity reliability score from AWS Comprehend, if exist"
+                                "description": "Entity reliability score from AWS Comprehend, \
+                                    if exists"
                             },
                             "type": {
                                 "type": "string",
