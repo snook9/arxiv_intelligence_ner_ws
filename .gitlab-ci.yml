@@ -39,13 +39,7 @@ pylint:
   stage: Static Analysis
   allow_failure: true
   script:
-  - pylint --disable too-many-return-statements \
-    --disable too-many-instance-attributes \
-    --disable too-few-public-methods \
-    --disable too-many-locals \
-    --disable too-many-arguments \
-    --disable c-extension-no-member \
-    web_service/*
+  - pylint --disable too-many-return-statements --disable too-many-instance-attributes --disable too-few-public-methods --disable too-many-locals --disable too-many-arguments --disable c-extension-no-member web_service/*
 
 pytest:
   stage: Test
