@@ -6,7 +6,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 ## With Docker
 
-    sudo docker build -t arxiv_intelligence_web_service .
+    docker build -t arxiv_intelligence_web_service .
 
 ## With Linux or Mac OS
 
@@ -81,7 +81,7 @@ The file may look like:
 
 ## With Docker
 
-    sudo docker run -d -p 5000:5000 arxiv_intelligence_web_service
+    docker run -d -p 5000:5000 arxiv_intelligence_web_service
 
 ## With Linux or Mac OS
 
@@ -97,7 +97,9 @@ The file may look like:
 
 # Usage
 
-## Swagger
+## Swagger
+
+http://localhost:5000/apidocs/
 
 ## curl
 

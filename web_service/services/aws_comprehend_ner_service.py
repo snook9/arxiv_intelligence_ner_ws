@@ -23,26 +23,26 @@ class AwsComprehendNerService(NerInterface):
         """Convert an AWS type to NamedEntityTypeEnum
         See: https://docs.aws.amazon.com/comprehend/latest/dg/how-entities.html
         """
-        type_enum = None
+        ne_type_enum = None
         if type_str == "DATE":
-            type_enum = NamedEntityTypeEnum.DATE
+            ne_type_enum = NamedEntityTypeEnum.DATE
         elif type_str == "COMMERCIAL_ITEM":
-            type_enum = NamedEntityTypeEnum.PRODUCT
+            ne_type_enum = NamedEntityTypeEnum.PRODUCT
         elif type_str == "EVENT":
-            type_enum = NamedEntityTypeEnum.EVENT
+            ne_type_enum = NamedEntityTypeEnum.EVENT
         elif type_str == "LOCATION":
-            type_enum = NamedEntityTypeEnum.LOCATION
+            ne_type_enum = NamedEntityTypeEnum.LOCATION
         elif type_str == "ORGANIZATION":
-            type_enum = NamedEntityTypeEnum.ORGANIZATION
+            ne_type_enum = NamedEntityTypeEnum.ORGANIZATION
         elif type_str == "PERSON":
-            type_enum = NamedEntityTypeEnum.PERSON
+            ne_type_enum = NamedEntityTypeEnum.PERSON
         elif type_str == "QUANTITY":
-            type_enum = NamedEntityTypeEnum.QUANTITY
+            ne_type_enum = NamedEntityTypeEnum.QUANTITY
         elif type_str == "TITLE":
-            type_enum = NamedEntityTypeEnum.TITLE
+            ne_type_enum = NamedEntityTypeEnum.TITLE
         else:
-            type_enum = NamedEntityTypeEnum.OTHER
-        return type_enum
+            ne_type_enum = NamedEntityTypeEnum.OTHER
+        return ne_type_enum
 
     def extract(self: object, text: str,
                 relationship: NamedEntityRelationshipEnum = NamedEntityRelationshipEnum.QUOTED,

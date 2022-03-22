@@ -24,4 +24,7 @@ RUN python3 -m pip install -r requirements.txt
 WORKDIR /app
 COPY . /app
 
+RUN useradd -ms /bin/bash user && chown -R user /app
+USER user
+
 CMD ["python3", "main.py"]
