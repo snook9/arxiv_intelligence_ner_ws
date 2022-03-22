@@ -1,0 +1,9 @@
+{
+    "pdf_url": "https://arxiv.org/pdf/2203.08015.pdf",
+    "named_entities_found": 177,
+    "actual_named_entities": 243,
+    "accuracy": "72.84 %",
+    "accuracy_description": "Percentage based on number of named entities found vs. reference",
+    "error": 26,
+    "error_description": "Number of named entities as false positives"
+}
