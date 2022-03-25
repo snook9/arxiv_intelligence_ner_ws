@@ -1,15 +1,11 @@
 {
     "pdf_url": "https://arxiv.org/pdf/2203.08111.pdf",
     "named_entities": [
-        "Mikel Artetxe1",
-        "Itziar Aldabe2",
-        "Rodrigo Agerri2",
-        "Olatz Perez-de-Vi\u00f1aspre2",
-        "Aitor Soroa2",
-        "itziar.aldabe",
-        "rodrigo.agerri",
-        "olatz.perezdevinaspre",
-        "a.soroa",
+        "Mikel Artetxe",
+        "Itziar Aldabe",
+        "Rodrigo Agerri",
+        "Olatz Perez-de-Vi\u00f1aspre",
+        "Aitor Soroa",
         "Kreutzer",
         "Bommasani",
         "Kaplan",
@@ -17,7 +13,7 @@
         "Conneau",
         "Xue",
         "Lin",
-        "Berria Hitza\u2021",
+        "Berria Hitza",
         "Argia",
         "Mutrikuko Hitza",
         "Urola",
@@ -36,7 +32,6 @@
         "Lai",
         "Nikolas Vicu\u00f1a",
         "Naman Goyal",
-        "RoBERTa",
         "Arantza Rico",
         "Paloma Rodriguez-Mi\u00f1ambres",
         "Itziar Aldabe",
@@ -364,7 +359,6 @@
         "Rami Al-Rfou",
         "Aditya Siddhant",
         "Aditya Barua",
-        "Colin Raffel",
-        "ERTAINA"
+        "Colin Raffel"
     ]
 }
