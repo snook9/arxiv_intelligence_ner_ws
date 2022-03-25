@@ -1,7 +1,8 @@
 {
     "pdf_url": "https://arxiv.org/pdf/2203.08617.pdf",
     "named_entities": [
-        "Xiongjie Chen  Yunpeng Li",
+        "Xiongjie Chen",
+        "Yunpeng Li",
         "K. Sohn,",
         "H. Lee",
         "X. Yan",
@@ -61,7 +62,6 @@
         "D. J. Rezende",
         "S. Mohamed",
         "B. Lakshminarayanan",
-        "J.",
         "L. Dinh",
         "J. Sohl-Dickstein",
         "S. Bengio",
