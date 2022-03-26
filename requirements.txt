@@ -7,6 +7,7 @@ certifi==2021.10.8
 charset-normalizer==2.0.12
 click==8.0.4
 cymem==2.0.6
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.2.0/en_core_web_sm-3.2.0-py3-none-any.whl
 flasgger==0.9.5
 Flask==2.0.3
 greenlet==1.1.2
@@ -39,6 +40,9 @@ requests==2.27.1
 s3transfer==0.5.2
 six==1.16.0
 smart-open==5.2.1
+spacy==3.2.3
+spacy-legacy==3.0.9
+spacy-loggers==1.0.1
 SQLAlchemy==1.4.32
 srsly==2.4.2
 thinc==8.0.14
@@ -51,3 +55,5 @@ waitress==2.1.0
 wasabi==0.9.0
 Werkzeug==2.0.3
 zipp==3.7.0
+wheel==0.37.1
+setuptools==61.1.0
