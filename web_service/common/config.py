@@ -42,10 +42,10 @@ class Config:
             self.aws_region = "us-east-1"
 
         try:
-            self.max_char_per_aws_request = config.get("DEFAULT","max_char_per_aws_request")
+            self.max_char_per_aws_request = int(config.get("DEFAULT","max_char_per_aws_request"))
         except configparser.NoOptionError as err:
             print(f"Error in file config/config.ini: {err=}, {type(err)=}", file=sys.stderr)
-            self.max_char_per_aws_request = "4900"
+            self.max_char_per_aws_request = int("4900")
 
     def get_upload_temp_folder(self):
         """Returns upload_temp_folder"""
