@@ -28,10 +28,13 @@ These instructions assume you're using Python 3 on a recent OS. Package names ma
 
 ### Web Service
 
-#### Virtual environment
+#### Create a virtual environment and activate it
 
     python3 -m venv venv
     . venv/bin/activate
+
+#### Web Service
+
     pip install -r requirements.txt
 
 ## With Windows OS
