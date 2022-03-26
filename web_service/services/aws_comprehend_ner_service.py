@@ -6,7 +6,7 @@ Web service specialized in Named Entity Recognition (NER), in Natural Language P
 
 import textwrap
 import boto3
-from botocore.exceptions import NoCredentialsError, ClientError
+from botocore.exceptions import NoCredentialsError, ClientError, EndpointConnectionError
 from web_service.entities.named_entity import NamedEntity, NamedEntityTypeEnum, NamedEntityScoreEnum
 from web_service.entities.named_entity import NamedEntityRelationshipEnum
 from .ner_interface import NerInterface
@@ -70,12 +70,12 @@ class AwsComprehendNerService(NerInterface):
                     named_entity.score = NamedEntityScoreEnum.LOW
                     named_entity.relationship = relationship
                     named_entities.append(named_entity)
-            except NoCredentialsError:
-                print("Unable to locate AWS credentials")
-            except ClientError:
-                print("An error occurred (UnrecognizedClientException) \
-                when calling the DetectEntities operation: \
-                The security AWS token included in the request is invalid")
+            except NoCredentialsError as err:
+                print(f"NoCredentialsError: Unable to locate AWS credentials; {err}")
+            except EndpointConnectionError as err:
+                print(f"EndpointConnectionError: {err}")
+            except ClientError as err:
+                print(f"ClientError: {err}")
             lines_offset += len(line)
 
         # We must sort the list by begin_offset

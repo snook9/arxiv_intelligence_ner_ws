@@ -303,7 +303,9 @@ class DocumentEntity(Base):
         ner_services = []
         ner_methods = self.config.get_ner_methods()
         if "aws-comprehend" in ner_methods:
-            ner_services.append(AwsComprehendNerService(self.config.get_aws_region()))
+            ner_services.append(AwsComprehendNerService(
+                self.config.get_aws_region(),
+                self.config.get_max_char_per_aws_request()))
         if "nltk" in ner_methods:
             print("NLTK NER method not supported yet")
         if "spacy" in ner_methods:
